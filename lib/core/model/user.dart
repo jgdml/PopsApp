@@ -13,7 +13,7 @@ class User {
   static const String PHONE_NUMBER = "phoneNumber";
   static const String STATUS = "status";
 
-  int? id;
+  String? id;
   bool? active;
   String? name;
   String? username;
@@ -38,7 +38,7 @@ class User {
   });
 
   static User fromJson(Map<String, dynamic> json) => User(
-        id: json[ID] as int?,
+        id: json[ID] as String?,
         active: json[ACTIVE] as bool?,
         name: json[NAME] as String?,
         username: json[USERNAME] as String?,
