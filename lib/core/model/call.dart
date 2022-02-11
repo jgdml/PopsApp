@@ -12,7 +12,7 @@ class Call {
   static const String END_TIME = 'endTime';
   static const String STATUS = 'status';
 
-  int? id;
+  String? id;
   bool? active;
   User? receiver;
   User? caller;
@@ -31,7 +31,7 @@ class Call {
   });
 
   static Call fromJson(Map<String, dynamic> json) => Call(
-        id: json[ID] as int?,
+        id: json[ID] as String?,
         active: json[ACTIVE] as bool?,
         receiver: json[RECEIVER] != null ? User.fromJson(json[RECEIVER]) : null,
         caller: json[CALLER] != null ? User.fromJson(json[CALLER]) : null,
