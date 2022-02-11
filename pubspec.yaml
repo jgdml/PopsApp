@@ -47,6 +47,11 @@ dev_dependencies:
 
   flutter_native_splash: ^1.3.2
 
+  flutter_maps:
+
+  cloud_firestore:
+  firebase_core:
+
   
 flutter_native_splash:
     image: assets/splash.png
