@@ -1,4 +1,5 @@
 // ignore_for_file: constant_identifier_names
+import 'package:pops_app/core/model/status-enum.dart';
 import 'gender-enum.dart';
 
 class User {
@@ -22,7 +23,7 @@ class User {
   String? urlPhoto;
   String? email;
   String? phoneNumber;
-  String? status;
+  StatusEnum? status;
 
   User({
     this.id,
@@ -49,7 +50,9 @@ class User {
         urlPhoto: json[URL_PHOTO] as String?,
         email: json[EMAIL] as String?,
         phoneNumber: json[PHONE_NUMBER] as String?,
-        status: json[STATUS] as String?,
+        status: json[STATUS] != null
+            ? StatusEnum.values.where((a) => a.value == json[STATUS]).first
+            : null,
       );
 
   Map<String, dynamic> toJson() {
@@ -63,7 +66,7 @@ class User {
       URL_PHOTO: urlPhoto,
       EMAIL: email,
       PHONE_NUMBER: phoneNumber,
-      STATUS: status,
+      STATUS: status != null ? status!.value.toString() : status,
     };
   }
 }
