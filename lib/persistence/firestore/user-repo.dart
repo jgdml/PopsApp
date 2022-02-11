@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
 
 class UserRepo{
@@ -32,9 +33,8 @@ class UserRepo{
 
     delete(id) async {
 
-        // mudar para remover logico
         await userCollection.doc(id).set({
-            'status': ''
+            'status': StatusEnum.I
         });
     }
 
