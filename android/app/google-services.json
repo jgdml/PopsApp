@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1018922799653",
+    "project_id": "pops-4877c",
+    "storage_bucket": "pops-4877c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018922799653:android:1e036cd3f861c7d29f65cc",
+        "android_client_info": {
+          "package_name": "com.example.pops_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018922799653-tm0u4cqen6oeep4p1mpbpg8tvep0g219.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDldVQJ1XGiwxWeL5BzBqgxIYobR-218Y8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018922799653-tm0u4cqen6oeep4p1mpbpg8tvep0g219.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
