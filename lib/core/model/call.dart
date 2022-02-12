@@ -58,7 +58,8 @@ class Call {
       END_TIME: endTime != null
           ? DateFormat('yyyy-MM-dd\'T\'HH:mm:ss.SSS').format(endTime!)
           : endTime,
-      STATUS: status,
+      STATUS: status != null ? status!.value.toString() : status,
+      
     };
   }
 }
