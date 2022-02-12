@@ -42,7 +42,7 @@ dependencies:
 
   flutter_map: ^0.14.0
   latlong: ^0.6.1
-  geolocator: ^8.1.1
+  geolocator: 
 
   cloud_firestore:
   firebase_core:
@@ -81,10 +81,6 @@ flutter:
 
   assets:
     - assets/
-  # To add assets to your application, add an assets section, like this:
-  assets:
-  - assets/
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
