@@ -17,30 +17,26 @@ class UserRepo{
         var lista = res.docs.map(
             (doc) => User(
               id: doc.reference.id.toString(),
-              active: doc['active'],
-              name: doc['name'],
-              username: doc['username'],
-              gender: doc['gender'],
-              password: doc['password'],
-              urlPhoto: doc['urlPhoto'],
-              email: doc['email'],
-              phoneNumber: doc['phoneNumber'],
-              status: doc['status'],
+              active: doc['ACTIVE'],
+              name: doc['NAME'],
+              username: doc['USERNAME'],
+              gender: doc['GENDER'],
+              password: doc['PASSWORD'],
+              urlPhoto: doc['URLPHOTO'],
+              email: doc['EMAIL'],
+              phoneNumber: doc['PHONENUMBER'],
             )
         );
         return lista.toList();
     }
 
     delete(id) async {
-
         await userCollection.doc(id).set({
-            'status': StatusEnum.I
+            'ACTIVE': false
         });
     }
 
     saveOrUpdate(User user) async {
-        await userCollection.doc(user.id.toString()).set({
-            
-        });
+        await userCollection.doc(user.id.toString()).set(user.toJson());
     }
 }
