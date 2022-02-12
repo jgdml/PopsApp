@@ -1,4 +1,5 @@
 // ignore_for_file: constant_identifier_names
+import 'package:pops_app/core/model/role-enum.dart';
 import 'package:pops_app/core/model/status-enum.dart';
 import 'gender-enum.dart';
 
@@ -12,7 +13,8 @@ class User {
   static const String URL_PHOTO = "urlPhoto";
   static const String EMAIL = "email";
   static const String PHONE_NUMBER = "phoneNumber";
-  static const String STATUS = "status";
+  // static const String STATUS = "status";
+  static const String ROLE = "role";
 
   String? id;
   bool? active;
@@ -23,7 +25,8 @@ class User {
   String? urlPhoto;
   String? email;
   String? phoneNumber;
-  StatusEnum? status;
+  // StatusEnum? status;
+  RoleEnum? role;
 
   User({
     this.id,
@@ -35,7 +38,8 @@ class User {
     this.urlPhoto,
     this.email,
     this.phoneNumber,
-    this.status,
+    // this.status,
+    this.role,
   });
 
   static User fromJson(Map<String, dynamic> json) => User(
@@ -50,8 +54,11 @@ class User {
         urlPhoto: json[URL_PHOTO] as String?,
         email: json[EMAIL] as String?,
         phoneNumber: json[PHONE_NUMBER] as String?,
-        status: json[STATUS] != null
-            ? StatusEnum.values.where((a) => a.value == json[STATUS]).first
+        // status: json[STATUS] != null
+        //     ? StatusEnum.values.where((a) => a.value == json[STATUS]).first
+        //     : null,
+        role: json[ROLE] != null
+            ? RoleEnum.values.where((a) => a.value == json[ROLE]).first
             : null,
       );
 
@@ -66,7 +73,8 @@ class User {
       URL_PHOTO: urlPhoto,
       EMAIL: email,
       PHONE_NUMBER: phoneNumber,
-      STATUS: status != null ? status!.value.toString() : status,
+      // STATUS: status != null ? status!.value.toString() : status,
+      ROLE: role != null ? role!.value.toString() : role,
     };
   }
 }
