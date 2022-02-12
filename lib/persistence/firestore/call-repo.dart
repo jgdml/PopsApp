@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names, file_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pops_app/core/model/call.dart';
+import 'package:pops_app/core/model/status-enum.dart';
+import 'package:pops_app/core/model/user.dart';
 
 class CallRepo{
 
@@ -17,11 +19,11 @@ class CallRepo{
             (doc) => Call(
               id: doc.reference.id.toString(),
               active: doc[Call.ACTIVE],
-              receiver: doc[Call.RECEIVER],
-              caller: doc[Call.CALLER],
-              startTime: doc[Call.START_TIME],
-              endTime: doc[Call.END_TIME],
-              status: doc[Call.STATUS],
+              receiver: User.fromJson(doc[Call.RECEIVER]),
+              caller: User.fromJson(doc[Call.CALLER]),
+              startTime: DateTime.parse(doc[Call.START_TIME]),
+              endTime: DateTime.parse(doc[Call.END_TIME]),
+              status: StatusEnumExtension.fromRaw(doc[Call.STATUS]),
             )
         );
         return lista.toList();
