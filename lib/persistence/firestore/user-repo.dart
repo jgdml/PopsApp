@@ -1,6 +1,5 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, file_names
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
 
 class UserRepo{
@@ -17,14 +16,15 @@ class UserRepo{
         var lista = res.docs.map(
             (doc) => User(
               id: doc.reference.id.toString(),
-              active: doc['ACTIVE'],
-              name: doc['NAME'],
-              username: doc['USERNAME'],
-              gender: doc['GENDER'],
-              password: doc['PASSWORD'],
-              urlPhoto: doc['URLPHOTO'],
-              email: doc['EMAIL'],
-              phoneNumber: doc['PHONENUMBER'],
+              active: doc[User.ACTIVE],
+              name: doc[User.NAME],
+              username: doc[User.USERNAME],
+              gender: doc[User.GENDER],
+              password: doc[User.PASSWORD],
+              urlPhoto: doc[User.URL_PHOTO],
+              email: doc[User.EMAIL],
+              phoneNumber: doc[User.PHONE_NUMBER],
+              role: doc[User.ROLE]
             )
         );
         return lista.toList();
@@ -37,6 +37,12 @@ class UserRepo{
     }
 
     saveOrUpdate(User user) async {
+      if (user.id.toString().isEmpty || user.id.toString() == 'null'){
+        await userCollection.doc().set(user.toJson());
+      }
+      else{
         await userCollection.doc(user.id.toString()).set(user.toJson());
+      }
+        
     }
 }
