@@ -56,7 +56,7 @@ class HomeWidget extends State<HomeScreen> {
                     ),
                     backgroundColor: Colors.transparent,
                     floatingActionButton: FloatingActionButton(
-                        onPressed: () => null,
+                        onPressed: () => _controller.showLoginModal(context),
                         child: Icon(Icons.center_focus_strong),
                         backgroundColor: Colors.white,
                     ),
