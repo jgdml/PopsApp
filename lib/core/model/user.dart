@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 import 'package:pops_app/core/model/role-enum.dart';
-import 'package:pops_app/core/model/status-enum.dart';
+
 import 'gender-enum.dart';
 
 class User {
