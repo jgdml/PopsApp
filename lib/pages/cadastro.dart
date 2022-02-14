@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class CadastroPage extends StatelessWidget {
+  const CadastroPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +19,84 @@ class LoginPage extends StatelessWidget {
                   height: 128,
                   child: Image.asset("assets/popsicle.png"),
                 ),
+
                 SizedBox(
                   height: 20,
                 ),
+
+                TextFormField(
+                  // autofocus: true,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    labelText: "Nome",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 20),
+                ),
+
+                TextFormField(
+                  // autofocus: true,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    labelText: "Nome de Usuário",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 20),
+                ),
+
+                TextFormField(
+                  // autofocus: true,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    labelText: "Genero",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 20),
+                ),
+
+                TextFormField(
+                  // autofocus: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Senha",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 20),
+                ),
+
+
+                TextFormField(
+                  // autofocus: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Confirmar Senha",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 20),
+                ),
+
                 TextFormField(
                   // autofocus: true,
                   keyboardType: TextInputType.emailAddress,
@@ -35,15 +110,12 @@ class LoginPage extends StatelessWidget {
                   ),
                   style: TextStyle(fontSize: 20),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+
                 TextFormField(
                   // autofocus: true,
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
+                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                    labelText: "Senha",
+                    labelText: "Telefone",
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 255, 255, 255),
                       fontWeight: FontWeight.w400,
@@ -52,6 +124,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   style: TextStyle(fontSize: 20),
                 ),
+
                 Container(
                   height: 40,
                   alignment: Alignment.centerRight,
@@ -61,13 +134,15 @@ class LoginPage extends StatelessWidget {
                       textAlign: TextAlign.right,
                     ),
                     onPressed: () {
-                      
+
                     },
                   ),
                 ),
+
                 SizedBox(
                   height: 40,
                 ),
+
                 Container(
                   height: 60,
                   alignment: Alignment.centerLeft,
@@ -81,10 +156,12 @@ class LoginPage extends StatelessWidget {
                         Color(0XFFF92B7F),
                       ],
                     ),
+
                     borderRadius: BorderRadius.all(
                       Radius.circular(5),
                     ),
                   ),
+
                   child: SizedBox.expand(
                     child: TextButton(
                       child: Row(
@@ -99,6 +176,7 @@ class LoginPage extends StatelessWidget {
                             ),
                             textAlign: TextAlign.left,
                           ),
+
                           Container(
                             child: SizedBox(
                               child: Image.asset("assets/popsicle.png"),
@@ -108,15 +186,18 @@ class LoginPage extends StatelessWidget {
                           )
                         ],
                       ),
+
                       onPressed: () {
-                        
+
                       },
                     ),
                   ),
                 ),
+
                 SizedBox(
                   height: 10,
                 ),
+
                 Container(
                   height: 60,
                   alignment: Alignment.centerLeft,
@@ -126,6 +207,7 @@ class LoginPage extends StatelessWidget {
                       Radius.circular(5),
                     ),
                   ),
+
                   child: SizedBox.expand(
                     child: TextButton(
                       child: Row(
@@ -153,9 +235,11 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 SizedBox(
                   height: 10,
                 ),
+
                 Container(
                   height: 40,
                   child: TextButton(
@@ -164,7 +248,7 @@ class LoginPage extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     onPressed: () {
-                      
+
                     },
                   ),
                 ),
