@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:pops_app/persistence/firestore/call-repo.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/home/home-controller.dart';
@@ -50,6 +49,7 @@ class HomeWidget extends State<HomeScreen> {
             ),
           );
         } else {
+          debugPrint("Buscou iceman");
           icemen = _controller.docsToUserList(snapshot.data!.docs);
           return Stack(
             children: [

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/shared/login-modal-widget.dart';
@@ -53,11 +54,13 @@ class HomeController {
   docsToUserList(dynamic docs) {
     var users = <User>[];
     docs.forEach((doc) => {
-          if (RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN)
+          if (RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN &&
+              StatusEnumExtension.fromRaw(doc[User.STATUS]) != StatusEnum.I)
             {
               users.add(User(
                 id: doc.reference.id.toString(),
                 active: doc[User.ACTIVE],
+                status: StatusEnumExtension.fromRaw(doc[User.STATUS]),
                 name: doc[User.NAME],
                 username: doc[User.USERNAME],
                 gender: GenderEnumExtension.fromRaw(doc[User.GENDER]),
@@ -66,6 +69,7 @@ class HomeController {
                 email: doc[User.EMAIL],
                 phoneNumber: doc[User.PHONE_NUMBER],
                 role: RoleEnumEnumExtension.fromRaw(doc[User.ROLE]),
+                position: LatLng.fromJson(doc[User.POSITION]),
               ))
             }
         });
