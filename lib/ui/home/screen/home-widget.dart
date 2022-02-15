@@ -10,11 +10,13 @@ import 'package:pops_app/ui/home/home-controller.dart';
 import 'package:pops_app/ui/theme/colors.dart';
 
 import '../../../core/model/user.dart';
+import '../../utils/constants.dart';
 import '../../utils/util.dart';
 import 'home-page.dart';
 
 class HomeWidget extends State<HomeScreen> {
   final HomeController _controller = HomeController();
+  final MapController mapController = MapController();
   final Util util = Util();
 
   var calls = [];
@@ -34,6 +36,8 @@ class HomeWidget extends State<HomeScreen> {
   _getUserLocation() async {
     await _controller.getClientLocation().then((value) => setState(() {
           userLocation = value;
+          // Future.delayed(Duration(milliseconds: 5000), ());
+          mapController.move(userLocation!, 16.0);
         }));
   }
 
@@ -54,9 +58,10 @@ class HomeWidget extends State<HomeScreen> {
           return Stack(
             children: [
               FlutterMap(
+                mapController: mapController,
                 options: MapOptions(
-                  center: LatLng(-23.07993, -52.46181),
-                  zoom: 16.0,
+                  center: userLocation ?? BRAZIL_LAT_LONG,
+                  zoom: 4,
                 ),
                 layers: [
                   TileLayerOptions(
@@ -124,8 +129,11 @@ class HomeWidget extends State<HomeScreen> {
           width: 80.0,
           height: 80.0,
           point: position,
-          builder: (ctx) => Image(
-                image: AssetImage("assets/popsicle.png"),
+          builder: (ctx) => AnimatedContainer(
+                duration: Duration(milliseconds: 500),
+                child: Image(
+                  image: AssetImage("assets/popsicle.png"),
+                ),
               )));
     }
 
