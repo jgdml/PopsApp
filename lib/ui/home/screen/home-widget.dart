@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:pops_app/persistence/firestore/call-repo.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/home/home-controller.dart';
@@ -19,15 +20,22 @@ class HomeWidget extends State<HomeScreen> {
 
   var calls = [];
   var icemen = <User>[];
+  LatLng? userLocation;
 
   @override
   void initState() {
     super.initState();
-    _controller.getClientLocation();
+    _getUserLocation();
     // TODO - só criar esse listener se o user.role = ICEMAN (caso logado)
     FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
       calls = event.docs;
     });
+  }
+
+  _getUserLocation() async {
+    await _controller.getClientLocation().then((value) => setState(() {
+          userLocation = value;
+        }));
   }
 
   @override
@@ -93,6 +101,20 @@ class HomeWidget extends State<HomeScreen> {
   List<Marker> _getMarkers(List<User> icemen) {
     var positions = <LatLng>[];
     var markers = <Marker>[];
+
+    //Provisório
+    if (userLocation != null) {
+      markers.add(Marker(
+          width: 80.0,
+          height: 80.0,
+          point: userLocation!,
+          builder: (ctx) => Icon(
+                Icons.place,
+                color: Colors.red,
+                size: 50,
+              )));
+    }
+
     for (var iceman in icemen) {
       if (iceman.position != null) positions.add(iceman.position!);
     }
