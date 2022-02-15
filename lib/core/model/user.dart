@@ -1,4 +1,5 @@
 // ignore_for_file: constant_identifier_names
+import 'package:latlong2/latlong.dart';
 import 'package:pops_app/core/model/role-enum.dart';
 
 import 'gender-enum.dart';
@@ -15,6 +16,7 @@ class User {
   static const String PHONE_NUMBER = "phoneNumber";
   // static const String STATUS = "status";
   static const String ROLE = "role";
+  static const String POSITION = "position";
 
   String? id;
   bool? active;
@@ -27,6 +29,7 @@ class User {
   String? phoneNumber;
   // StatusEnum? status;
   RoleEnum? role;
+  LatLng? position;
 
   User({
     this.id,
@@ -40,6 +43,7 @@ class User {
     this.phoneNumber,
     // this.status,
     this.role,
+    this.position,
   });
 
   static User fromJson(Map<String, dynamic> json) => User(
@@ -60,6 +64,7 @@ class User {
         role: json[ROLE] != null
             ? RoleEnum.values.where((a) => a.value == json[ROLE]).first
             : null,
+        position: json[POSITION] as LatLng?,
       );
 
   Map<String, dynamic> toJson() {
@@ -75,6 +80,7 @@ class User {
       PHONE_NUMBER: phoneNumber,
       // STATUS: status != null ? status!.value.toString() : status,
       ROLE: role != null ? role!.value.toString() : role,
+      POSITION: position,
     };
   }
 }
