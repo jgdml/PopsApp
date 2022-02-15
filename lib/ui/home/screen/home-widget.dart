@@ -34,10 +34,13 @@ class HomeWidget extends State<HomeScreen> {
   }
 
   _getUserLocation() async {
-    await _controller.getClientLocation().then((value) => setState(() {
+    await _controller.getClientLocation().then((value) {
+      setState(() {
           userLocation = value;
-          mapController.move(userLocation!, 17);
-        }));
+          
+        });
+        mapController.onReady.then((value) => mapController.move(userLocation!, 17));
+    });
   }
 
   @override
