@@ -5,23 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pops_app/persistence/firestore/call-repo.dart';
+import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/home/home-controller.dart';
 import 'package:pops_app/ui/theme/colors.dart';
 
+import '../../../core/model/user.dart';
+import '../../utils/util.dart';
 import 'home-page.dart';
 
 class HomeWidget extends State<HomeScreen> {
   final HomeController _controller = HomeController();
+  final Util util = Util();
 
   var calls = [];
+  var icemen = <User>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.getClientLocation();
+    // TODO - só criar esse listener se o user.role = ICEMAN (caso logado)
+    FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
+      calls = event.docs;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    _controller.getClientLocation();
-
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots(),
+      stream: FirebaseFirestore.instance.collection(UserRepo.REPO_NAME).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -30,7 +42,7 @@ class HomeWidget extends State<HomeScreen> {
             ),
           );
         } else {
-          calls = snapshot.data!.docs;
+          icemen = _controller.docsToUserList(snapshot.data!.docs);
           return Stack(
             children: [
               FlutterMap(
@@ -40,8 +52,7 @@ class HomeWidget extends State<HomeScreen> {
                 ),
                 layers: [
                   TileLayerOptions(
-                    urlTemplate:
-                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                     subdomains: ['a', 'b', 'c'],
                     attributionBuilder: (_) {
                       return Text(
@@ -51,40 +62,51 @@ class HomeWidget extends State<HomeScreen> {
                     },
                   ),
                   MarkerLayerOptions(
-                    markers: [
-                      Marker(
-                        width: 80.0,
-                        height: 80.0,
-                        point: LatLng(-23.07993, -52.46181),
-                        builder: (ctx) => Image(
-                          image: AssetImage("assets/popsicle.png"),
-                        ),
-                      ),
-                    ],
+                    markers: _getMarkers(icemen),
                   ),
                 ],
               ),
               Scaffold(
                 drawer: Drawer(
-                        child: Center(child: Text("abc")),
-                    ),
-                    appBar: AppBar(
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.black,
-                        shadowColor: Colors.transparent,
-                    ),
-                    backgroundColor: Colors.transparent,
-                    floatingActionButton: FloatingActionButton(
-                        onPressed: () => _controller.showLoginModal(context),
-                        child: Icon(Icons.center_focus_strong),
-                        backgroundColor: Colors.white,
-                    ),
-                
+                  child: Center(child: Text("abc")),
+                ),
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Colors.black,
+                  shadowColor: Colors.transparent,
+                ),
+                backgroundColor: Colors.transparent,
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () => _controller.showLoginModal(context),
+                  // onPressed: () => _controller.showLoginModal(context), // todo - se não estiver logado mostrar botão de logar-se
+                  child: util.gradientIcon(45, Icons.campaign),
+                  backgroundColor: Colors.white,
+                ),
               ),
             ],
           );
         }
       },
     );
+  }
+
+  List<Marker> _getMarkers(List<User> icemen) {
+    var positions = <LatLng>[];
+    var markers = <Marker>[];
+    for (var iceman in icemen) {
+      if (iceman.position != null) positions.add(iceman.position!);
+    }
+
+    for (var position in positions) {
+      markers.add(Marker(
+          width: 80.0,
+          height: 80.0,
+          point: position,
+          builder: (ctx) => Image(
+                image: AssetImage("assets/popsicle.png"),
+              )));
+    }
+
+    return markers;
   }
 }
