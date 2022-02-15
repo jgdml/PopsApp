@@ -72,7 +72,8 @@ class HomeWidget extends State<HomeScreen> {
                     attributionBuilder: (_) {
                       return Text(
                         "© OpenStreetMap contributors",
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                        style: TextStyle(
+                            color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
                       );
                     },
                   ),
