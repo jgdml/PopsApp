@@ -36,8 +36,7 @@ class HomeWidget extends State<HomeScreen> {
   _getUserLocation() async {
     await _controller.getClientLocation().then((value) => setState(() {
           userLocation = value;
-          // Future.delayed(Duration(milliseconds: 5000), ());
-          mapController.move(userLocation!, 16.0);
+          mapController.move(userLocation!, 17);
         }));
   }
 
