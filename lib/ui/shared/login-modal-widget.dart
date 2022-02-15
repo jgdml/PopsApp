@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
-// import 'package:pops_app/ui/shared/register-modal-widget.dart';
+import 'package:pops_app/ui/shared/register-modal-widget.dart';
 
 class LoginModal extends StatefulWidget {
   const LoginModal({Key? key}) : super(key: key);
@@ -16,22 +16,20 @@ class _LoginModalState extends State<LoginModal> {
   String password = '';
 
   tryLogin() async {
-    fb.FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        )
-        .catchError(
-          (err) => {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text("Erro"),
-                content: Text(err.toString()),
-              ),
-            ),
-          },
-        );
+    try {
+      await fb.FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on fb.FirebaseAuthException catch (err) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Erro"),
+          content: Text(err.toString()),
+        ),
+      );
+    }
   }
 
   @override
@@ -46,7 +44,7 @@ class _LoginModalState extends State<LoginModal> {
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           TextField(
-            onChanged: (val) => setState(() {
+            onChanged: (val) => this.setState(() {
               email = val;
             }),
             style: TextStyle(fontSize: 18),
@@ -56,7 +54,7 @@ class _LoginModalState extends State<LoginModal> {
             ),
           ),
           TextField(
-            onChanged: (val) => setState(() {
+            onChanged: (val) => this.setState(() {
               password = val;
             }),
             obscureText: true,
@@ -82,8 +80,15 @@ class _LoginModalState extends State<LoginModal> {
           FractionallySizedBox(
             widthFactor: 0.8,
             child: OutlinedButton(
-              onPressed: null,
-              // () => showModalBottomSheet(context: context, builder: (context) => RegisterModal()),
+              onPressed: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => FractionallySizedBox(
+                    heightFactor: 0.85, child: RegisterModal()),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                isScrollControlled: true,
+              ),
               child: Text(
                 "Não tenho conta",
                 style: TextStyle(fontSize: 18),
