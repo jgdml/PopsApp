@@ -4,18 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:pops_app/core/model/call.dart';
-import 'package:pops_app/core/model/gender-enum.dart';
-import 'package:pops_app/core/model/role-enum.dart';
-import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
-import 'package:pops_app/persistence/firestore/call-repo.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/shared/login-modal-widget.dart';
 
 class HomeController {
     User? _user;
-    UserRepo _userRepo = UserRepo();
+    final UserRepo _userRepo = UserRepo();
 
     constructor() {
         _checkUser();
