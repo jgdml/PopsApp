@@ -105,6 +105,26 @@ class HomeController {
     return users;
   }
 
+  docsToCallsList(dynamic docs) {
+    var calls = <Call>[];
+    docs.forEach((doc) => {
+          calls.add(Call(
+            id: doc.reference.id.toString(),
+            active: doc[Call.ACTIVE],
+            receiver: User.fromJson(doc[Call.RECEIVER]),
+            caller: User.fromJson(doc[Call.CALLER]),
+            startTime: doc[Call.START_TIME] != null
+                ? DateTime.parse(doc[Call.START_TIME]).toLocal()
+                : doc[Call.START_TIME],
+            endTime: doc[Call.END_TIME] != null
+                ? DateTime.parse(doc[Call.END_TIME]).toLocal()
+                : doc[Call.END_TIME],
+            status: StatusEnumExtension.fromRaw(doc[Call.STATUS]),
+          ))
+        });
+    return calls;
+  }
+
   tryLogin(BuildContext context, LoginDTO login) async {
     try {
       await fb.FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -135,10 +155,10 @@ class HomeController {
     for (var iceman in icemen) {
       //Se a long + lat do iceman da vez menos a lat + long do user for menor
       // que o salvo na variável então ele está mais perto
-      var isClose =
-          (iceman.position!.latitude + iceman.position!.longitude) - (userLocation.latitude + userLocation.longitude) <
-              (closestIceman.position!.latitude + closestIceman.position!.longitude) -
-                  (userLocation.latitude + userLocation.longitude);
+      var isClose = (iceman.position!.latitude + iceman.position!.longitude) -
+              (userLocation.latitude + userLocation.longitude) <
+          (closestIceman.position!.latitude + closestIceman.position!.longitude) -
+              (userLocation.latitude + userLocation.longitude);
       if (isClose) {
         closestIceman = closestIceman;
       }

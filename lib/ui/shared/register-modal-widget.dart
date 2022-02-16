@@ -4,6 +4,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:pops_app/core/model/gender-enum.dart';
 import 'package:pops_app/core/model/role-enum.dart';
 import 'package:pops_app/core/model/user.dart';
@@ -63,6 +65,8 @@ class _RegisterModalState extends State<RegisterModal> {
     UserRepo userRepo = UserRepo();
 
     try {
+      var location = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      user.position = LatLng(location.latitude, location.longitude);
       await userRepo.saveOrUpdate(user);
       Navigator.pop(context);
     } on fb.FirebaseAuthException catch (err) {

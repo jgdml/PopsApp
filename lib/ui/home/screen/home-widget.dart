@@ -12,6 +12,7 @@ import 'package:pops_app/ui/home/home-controller.dart';
 import 'package:pops_app/ui/shared/floating-switch-widget.dart';
 import 'package:pops_app/ui/theme/colors.dart';
 
+import '../../../core/model/call.dart';
 import '../../../core/model/user.dart';
 import '../../utils/constants.dart';
 import '../../utils/util.dart';
@@ -22,7 +23,7 @@ class HomeWidget extends State<HomeScreen> {
   final MapController mapController = MapController();
   final Util util = Util();
 
-  var calls = [];
+  var callsDocs = [];
   var icemen = <User>[];
   LatLng? userLocation;
 
@@ -37,7 +38,9 @@ class HomeWidget extends State<HomeScreen> {
     await _controller.checkUser();
     if (_controller.getUserRole() != null && _controller.getUserRole() == RoleEnum.ROLE_ICEMAN) {
       FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
-        calls = event.docs;
+        setState(() {
+          callsDocs = event.docs;
+        });
       });
     }
   }
@@ -121,6 +124,7 @@ class HomeWidget extends State<HomeScreen> {
         } else {
           debugPrint("Buscou iceman");
           icemen = _controller.docsToUserList(snapshot.data!.docs);
+          _receiveCall(context);
           return Stack(
             children: [
               FlutterMap(
@@ -136,7 +140,8 @@ class HomeWidget extends State<HomeScreen> {
                     attributionBuilder: (_) {
                       return Text(
                         "© OpenStreetMap contributors",
-                        style: TextStyle(color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
+                        style: TextStyle(
+                            color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
                       );
                     },
                   ),
@@ -171,7 +176,8 @@ class HomeWidget extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                      decoration: BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+                                      decoration:
+                                          BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
                                       child: Icon(
                                         Icons.person,
                                         color: Colors.white,
@@ -181,13 +187,14 @@ class HomeWidget extends State<HomeScreen> {
                                     _controller.user!.name!,
                                     style: TextStyle(fontSize: 28, color: Colors.white),
                                   ),
-                                  Text(_controller.user!.email!, style: TextStyle(fontSize: 18, color: Colors.white)),
+                                  Text(_controller.user!.email!,
+                                      style: TextStyle(fontSize: 18, color: Colors.white)),
                                 ],
                               ),
                       ),
                       !_controller.isLoggedIn()
                           ? Container()
-                          : Container(
+                          : SizedBox(
                               width: double.infinity,
                               height: MediaQuery.of(context).size.height * 0.1,
                               child: TextButton.icon(
@@ -219,6 +226,21 @@ class HomeWidget extends State<HomeScreen> {
         }
       },
     );
+  }
+
+  _receiveCall(BuildContext context) {
+    var calls = _controller.docsToCallsList(callsDocs);
+    for (var call in calls) {
+      if (call.receiver!.email == _controller.user!.email) {
+        if (call.endTime!.isBefore(DateTime.now())) {
+          return Container(
+            width: 200,
+            height: 200,
+            color: Colors.amber,
+          );
+        }
+      }
+    }
   }
 
   List<Marker> _getMarkers(List<User> icemen) {
