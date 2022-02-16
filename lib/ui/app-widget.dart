@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pops_app/ui-web/pages/login.dart';
 import 'package:pops_app/ui/splash-screen/splash-screen.dart';
 import 'package:pops_app/ui/theme/texts.dart';
 
+import '../ui-web/pages/cadastro.dart';
 import 'theme/colors.dart';
 
 class AppWidget extends StatefulWidget {
@@ -22,7 +24,7 @@ class _AppWidget extends State<AppWidget> {
           primaryColor: primaryColor,
           dividerColor: dividerColor,
           accentColor: accentColor),
-      home: SplashScreenApp(),
+      home: LoginPage(),
     );
   }
 }
