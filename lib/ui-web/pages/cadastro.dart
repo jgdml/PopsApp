@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/ui-web/pages/login.dart';
 
 import '../../core/model/gender-enum.dart';
@@ -57,13 +58,14 @@ class _CadastroPageState extends State<CadastroPage> {
   }
 
   trySaveToDB() async {
-    user.role = RoleEnum.ROLE_ADMIN;
+    user.role = RoleEnum.ROLE_ICEMAN;
+    user.active = true;
+    user.status = StatusEnum.I;
 
     UserRepo userRepo = UserRepo();
 
     try {
       await userRepo.saveOrUpdate(user);
-      Navigator.pop(context);
     } on fb.FirebaseAuthException catch (err) {
       showDialog(
         context: context,
