@@ -39,6 +39,7 @@ class _FloatingSwitchState extends State<FloatingSwitch> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      backgroundColor: Colors.white,
       onPressed: () => buttonPress(),
       child: Icon(widget.icon, color: enabled? widget.enabledColor : Colors.grey,),
     );

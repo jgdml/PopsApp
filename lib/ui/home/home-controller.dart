@@ -35,12 +35,17 @@ class HomeController {
     return _user?.role;
   }
 
-  bool isLoggedIn(){
+  bool isLoggedIn() {
     return _user != null ? true : false;
   }
 
-  void showLoginModal(BuildContext context) {
-    showModalBottomSheet(
+  logout() async {
+    await fb.FirebaseAuth.instance.signOut();
+    _user = null;
+  }
+
+  Future<void> showLoginModal(BuildContext context) async {
+    await showModalBottomSheet(
       context: context,
       builder: (context) => FractionallySizedBox(
           heightFactor: 0.85,
@@ -55,6 +60,7 @@ class HomeController {
       ),
       isScrollControlled: true,
     );
+    return;
   }
 
   Future<LatLng> getClientLocation() async {
@@ -63,7 +69,8 @@ class HomeController {
     if (permission == LocationPermission.denied) {
       await Geolocator.requestPermission();
     }
-    var location = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var location = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
 
     return LatLng(location.latitude, location.longitude);
   }
@@ -73,7 +80,8 @@ class HomeController {
     docs.forEach((doc) => {
           if (doc[User.ROLE] != null &&
               doc[User.STATUS] != null &&
-              RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN &&
+              RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) ==
+                  RoleEnum.ROLE_ICEMAN &&
               StatusEnumExtension.fromRaw(doc[User.STATUS]) != StatusEnum.I)
             {
               users.add(User(
@@ -101,7 +109,7 @@ class HomeController {
         email: login.email!,
         password: login.password!,
       );
-      checkUser();
+      await checkUser();
       Navigator.of(context).pop();
     } on fb.FirebaseAuthException catch (err) {
       showDialog(
@@ -114,7 +122,5 @@ class HomeController {
     }
   }
 
-  createCall(BuildContext context) {
-
-  }
+  createCall(BuildContext context) {}
 }
