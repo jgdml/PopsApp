@@ -124,9 +124,12 @@ class HomeController {
             active: doc[Call.ACTIVE],
             receiver: User.fromJson(doc[Call.RECEIVER]),
             caller: User.fromJson(doc[Call.CALLER]),
-            startTime:
-                doc[Call.START_TIME] != null ? DateTime.parse(doc[Call.START_TIME]).toLocal() : doc[Call.START_TIME],
-            endTime: doc[Call.END_TIME] != null ? DateTime.parse(doc[Call.END_TIME]).toLocal() : doc[Call.END_TIME],
+            startTime: doc[Call.START_TIME] != null
+                ? DateTime.parse(doc[Call.START_TIME]).toLocal()
+                : doc[Call.START_TIME],
+            endTime: doc[Call.END_TIME] != null
+                ? DateTime.parse(doc[Call.END_TIME]).toLocal()
+                : doc[Call.END_TIME],
             status: StatusEnumExtension.fromRaw(doc[Call.STATUS]),
           ))
         });
@@ -175,18 +178,18 @@ class HomeController {
     }
   }
 
-  createCall(BuildContext context, List<User> icemen, LatLng userLocation) {
+  Future<User> createCall(BuildContext context, List<User> icemen, LatLng userLocation) async {
     var closestIceman = icemen.first;
 
     for (var iceman in icemen) {
       //Se a long + lat do iceman da vez menos a lat + long do user for menor
       // que o salvo na variável então ele está mais perto
       var isClose =
-          (iceman.position!.latitude + iceman.position!.longitude) - (userLocation.latitude + userLocation.longitude) <
-              (closestIceman.position!.latitude + closestIceman.position!.longitude) -
-                  (userLocation.latitude + userLocation.longitude);
+          ((iceman.position!.latitude + iceman.position!.longitude) - (userLocation.latitude + userLocation.longitude)).abs() <
+              ((closestIceman.position!.latitude + closestIceman.position!.longitude) -
+                  (userLocation.latitude + userLocation.longitude)).abs();
       if (isClose) {
-        closestIceman = closestIceman;
+        closestIceman = iceman;
       }
     }
 
@@ -199,5 +202,7 @@ class HomeController {
         startTime: now,
         endTime: now.add(Duration(minutes: CALL_TIMER)),
         status: StatusEnum.A));
+
+    return closestIceman;
   }
 }

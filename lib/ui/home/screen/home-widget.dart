@@ -1,19 +1,18 @@
 // ignore_for_file: file_names
 
-import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pops_app/core/model/role-enum.dart';
+import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/persistence/firestore/call-repo.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/home/home-controller.dart';
 import 'package:pops_app/ui/shared/floating-switch-widget.dart';
 import 'package:pops_app/ui/theme/colors.dart';
 
-import '../../../core/model/call.dart';
 import '../../../core/model/user.dart';
 import '../../utils/constants.dart';
 import '../../utils/util.dart';
@@ -28,6 +27,7 @@ class HomeWidget extends State<HomeScreen> {
   var icemen = <User>[];
   LatLng? userLocation;
   bool icemanGps = false;
+  User? icemanCalled;
 
   @override
   void initState() {
@@ -63,7 +63,7 @@ class HomeWidget extends State<HomeScreen> {
           userLocation = LatLng(position.latitude, position.longitude);
         });
         mapController.move(userLocation!, 17);
-        if (icemanGps){
+        if (icemanGps) {
           _controller.sendIcemanLocation(userLocation!);
         }
       }
@@ -85,7 +85,16 @@ class HomeWidget extends State<HomeScreen> {
 
   Widget _floatingCallButton() {
     return FloatingActionButton(
-      onPressed: () => _controller.createCall(context, icemen, userLocation!),
+      onPressed: () async {
+        var icemanCalled = await _controller.createCall(context, icemen, userLocation!);
+        setState(() {
+          this.icemanCalled = icemanCalled;
+        });
+        // var index = icemen.indexWhere((element) => element.email == icemanCalled.email);
+        // if(index != -1){
+        //   i
+        // }
+      },
       child: util.gradientIcon(45, Icons.campaign),
       backgroundColor: Colors.white,
     );
@@ -151,7 +160,6 @@ class HomeWidget extends State<HomeScreen> {
           );
         } else {
           icemen = _controller.docsToUserList(snapshot.data!.docs);
-          _receiveCall(context);
           return Stack(
             children: [
               FlutterMap(
@@ -167,7 +175,8 @@ class HomeWidget extends State<HomeScreen> {
                     attributionBuilder: (_) {
                       return Text(
                         "© OpenStreetMap contributors",
-                        style: TextStyle(color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
+                        style: TextStyle(
+                            color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
                       );
                     },
                   ),
@@ -202,7 +211,8 @@ class HomeWidget extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                      decoration: BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+                                      decoration:
+                                          BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
                                       child: Icon(
                                         Icons.person,
                                         color: Colors.white,
@@ -212,7 +222,8 @@ class HomeWidget extends State<HomeScreen> {
                                     _controller.user!.name!,
                                     style: TextStyle(fontSize: 28, color: Colors.white),
                                   ),
-                                  Text(_controller.user!.email!, style: TextStyle(fontSize: 18, color: Colors.white)),
+                                  Text(_controller.user!.email!,
+                                      style: TextStyle(fontSize: 18, color: Colors.white)),
                                 ],
                               ),
                       ),
@@ -247,6 +258,7 @@ class HomeWidget extends State<HomeScreen> {
                 backgroundColor: Colors.transparent,
                 floatingActionButton: _getFloatingButton(context),
               ),
+              _receiveCall(context),
             ],
           );
         }
@@ -254,23 +266,29 @@ class HomeWidget extends State<HomeScreen> {
     );
   }
 
-  _receiveCall(BuildContext context) {
+  Widget _receiveCall(BuildContext context) {
     var calls = _controller.docsToCallsList(callsDocs);
+    Widget widget = Container();
     for (var call in calls) {
       if (_controller.user != null && call.receiver!.email == _controller.user!.email) {
-        if (call.endTime!.isBefore(DateTime.now())) {
-          return Container(
-            width: 200,
-            height: 200,
-            color: Colors.amber,
+        if (call.endTime!.isAfter(DateTime.now()) && call.status != StatusEnum.I) {
+          debugPrint("Encontrou receiver " + call.receiver.email);
+          widget = Center(
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(width: 5, color: primaryColor),
+                  borderRadius: BorderRadius.circular(500)),
+              child: util.gradientIcon(400, Icons.campaign, startGradient: 0, endGradient: 0.5),
+            ),
           );
+          break;
         }
       }
     }
+    return widget;
   }
 
   List<Marker> _getMarkers(List<User> icemen) {
-    var positions = <LatLng>[];
     var markers = <Marker>[];
 
     //Provisório
@@ -291,24 +309,23 @@ class HomeWidget extends State<HomeScreen> {
       for (var iceman in icemen) {
         if (iceman.position != null) {
           if (_controller.user == null || iceman.email != _controller.user!.email) {
-            positions.add(iceman.position!);
+            if ((userLocation!.latitude - iceman.position!.latitude).abs() < ICEMEN_LOOK_RANGE &&
+                (userLocation!.longitude - iceman.position!.longitude).abs() < ICEMEN_LOOK_RANGE) {
+              var color =
+                  icemanCalled != null && iceman.email == icemanCalled!.email ? primaryColor : null;
+              markers.add(Marker(
+                  width: 80.0,
+                  height: 80.0,
+                  point: iceman.position!,
+                  builder: (ctx) => AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        child: Image(
+                          color: color,
+                          image: AssetImage("assets/popsicle.png"),
+                        ),
+                      )));
+            }
           }
-        }
-      }
-
-      for (var position in positions) {
-        if ((userLocation!.latitude - position.latitude).abs() < ICEMEN_LOOK_RANGE &&
-            (userLocation!.longitude - position.longitude).abs() < ICEMEN_LOOK_RANGE) {
-          markers.add(Marker(
-              width: 80.0,
-              height: 80.0,
-              point: position,
-              builder: (ctx) => AnimatedContainer(
-                    duration: Duration(milliseconds: 500),
-                    child: Image(
-                      image: AssetImage("assets/popsicle.png"),
-                    ),
-                  )));
         }
       }
     }

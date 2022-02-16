@@ -9,7 +9,7 @@ import '../../core/model/user.dart';
 import '../../persistence/firestore/user-repo.dart';
 
 class Util {
-  gradientIcon(double size, IconData icon) {
+  gradientIcon(double size, IconData icon, {double startGradient = 0, double endGradient = 0.55}) {
     return ShaderMask(
       child: SizedBox(
         child: Icon(
@@ -27,7 +27,7 @@ class Util {
             primaryColor,
             secondColor,
           ],
-          stops: const [0, 0.55],
+          stops: [startGradient,endGradient],
         ).createShader(rect);
       },
     );
@@ -41,7 +41,7 @@ class Util {
           email: "iceman_$i@email.com",
           gender: GenderEnum.O,
           name: "Iceman $i",
-          password: "sdasdasd",
+          password: "123456",
           phoneNumber: "asdfasdasd",
           role: RoleEnum.ROLE_ICEMAN,
           urlPhoto: "asdasd",
