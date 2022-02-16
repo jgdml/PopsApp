@@ -35,12 +35,8 @@ class HomeWidget extends State<HomeScreen> {
 
   _getUser() async {
     await _controller.checkUser();
-    if (_controller.getUserRole() != null &&
-        _controller.getUserRole() == RoleEnum.ROLE_ICEMAN) {
-      FirebaseFirestore.instance
-          .collection(CallRepo.REPO_NAME)
-          .snapshots()
-          .listen((event) {
+    if (_controller.getUserRole() != null && _controller.getUserRole() == RoleEnum.ROLE_ICEMAN) {
+      FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
         calls = event.docs;
       });
     }
@@ -61,7 +57,7 @@ class HomeWidget extends State<HomeScreen> {
 
   Widget _floatingCallButton() {
     return FloatingActionButton(
-      onPressed: () => debugPrint("make call"),
+      onPressed: () => _controller.createCall(context, icemen, userLocation!),
       child: util.gradientIcon(45, Icons.campaign),
       backgroundColor: Colors.white,
     );
@@ -115,8 +111,7 @@ class HomeWidget extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          FirebaseFirestore.instance.collection(UserRepo.REPO_NAME).snapshots(),
+      stream: FirebaseFirestore.instance.collection(UserRepo.REPO_NAME).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -137,16 +132,13 @@ class HomeWidget extends State<HomeScreen> {
                 ),
                 layers: [
                   TileLayerOptions(
-                    urlTemplate:
-                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                     subdomains: ['a', 'b', 'c'],
                     attributionBuilder: (_) {
                       return Text(
                         "© OpenStreetMap contributors",
                         style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                            decoration: TextDecoration.none),
+                            color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
                       );
                     },
                   ),
@@ -255,10 +247,8 @@ class HomeWidget extends State<HomeScreen> {
       }
 
       for (var position in positions) {
-        if ((userLocation!.latitude - position.latitude).abs() <
-                ICEMEN_LOOK_RANGE &&
-            (userLocation!.longitude - position.longitude).abs() <
-                ICEMEN_LOOK_RANGE) {
+        if ((userLocation!.latitude - position.latitude).abs() < ICEMEN_LOOK_RANGE &&
+            (userLocation!.longitude - position.longitude).abs() < ICEMEN_LOOK_RANGE) {
           markers.add(Marker(
               width: 80.0,
               height: 80.0,
@@ -272,7 +262,6 @@ class HomeWidget extends State<HomeScreen> {
         }
       }
     }
-
     return markers;
   }
 }
