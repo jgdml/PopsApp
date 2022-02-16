@@ -25,12 +25,35 @@ class UserRepo {
           gender: GenderEnumExtension.fromRaw(doc[User.GENDER]),
           password: doc[User.PASSWORD],
           urlPhoto: doc[User.URL_PHOTO],
+          status: StatusEnumExtension.fromRaw(doc[User.STATUS]),
           email: doc[User.EMAIL],
           phoneNumber: doc[User.PHONE_NUMBER],
           role: RoleEnumEnumExtension.fromRaw(doc[User.ROLE]),
         ));
     return lista.toList();
   }
+
+  Future<List<User>> findIcemen() async{
+    var res = await userCollection.where('role', isEqualTo: RoleEnum.ROLE_ICEMAN.value).get();
+
+    var lista = res.docs.map((doc) => User(
+          id: doc.reference.id.toString(),
+          active: doc[User.ACTIVE],
+          name: doc[User.NAME],
+          username: doc[User.USERNAME],
+          gender: GenderEnumExtension.fromRaw(doc[User.GENDER]),
+          password: doc[User.PASSWORD],
+          urlPhoto: doc[User.URL_PHOTO],
+          status: StatusEnumExtension.fromRaw(doc[User.STATUS]),
+          email: doc[User.EMAIL],
+          phoneNumber: doc[User.PHONE_NUMBER],
+          role: RoleEnumEnumExtension.fromRaw(doc[User.ROLE]),
+        ));
+    return lista.toList();
+  }
+
+
+
 
   Future<User?> findByEmail(String email) async {
     var res = await userCollection.where('email', isEqualTo: email).get();
