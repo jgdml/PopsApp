@@ -101,7 +101,6 @@ class HomeWidget extends State<HomeScreen> {
                 backgroundColor: Colors.transparent,
                 floatingActionButton: FloatingActionButton(
                   onPressed: () => _controller.user != null ? _controller.createCall(context) : _controller.showLoginModal(context),
-                  // onPressed: () => _controller.showLoginModal(context), // todo - se não estiver logado mostrar botão de logar-se
                   child: util.gradientIcon(45, Icons.campaign),
                   backgroundColor: Colors.white,
                 ),
