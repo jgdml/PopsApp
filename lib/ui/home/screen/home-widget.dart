@@ -89,14 +89,13 @@ class HomeWidget extends State<HomeScreen> {
     );
   }
 
-  _showQuickSnack(String text, BuildContext context){
+  _showQuickSnack(String text, BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(text),
-            duration: Duration(milliseconds: 800),
-          ),
-
-        );
+      SnackBar(
+        content: Text(text),
+        duration: Duration(milliseconds: 800),
+      ),
+    );
   }
 
   _getUserLocation() async {
@@ -104,8 +103,7 @@ class HomeWidget extends State<HomeScreen> {
       setState(() {
         userLocation = value;
       });
-      mapController.onReady
-          .then((value) => mapController.move(userLocation!, 17));
+      mapController.onReady.then((value) => mapController.move(userLocation!, 17));
     });
   }
 
@@ -138,8 +136,7 @@ class HomeWidget extends State<HomeScreen> {
                     attributionBuilder: (_) {
                       return Text(
                         "© OpenStreetMap contributors",
-                        style: TextStyle(
-                            color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
+                        style: TextStyle(color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
                       );
                     },
                   ),
@@ -174,9 +171,7 @@ class HomeWidget extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          shape: BoxShape.circle),
+                                      decoration: BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
                                       child: Icon(
                                         Icons.person,
                                         color: Colors.white,
@@ -184,31 +179,30 @@ class HomeWidget extends State<HomeScreen> {
                                       )),
                                   Text(
                                     _controller.user!.name!,
-                                    style: TextStyle(
-                                        fontSize: 28, color: Colors.white),
+                                    style: TextStyle(fontSize: 28, color: Colors.white),
                                   ),
-                                  Text(_controller.user!.email!,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.white)),
+                                  Text(_controller.user!.email!, style: TextStyle(fontSize: 18, color: Colors.white)),
                                 ],
                               ),
                       ),
-                      !_controller.isLoggedIn() ? Container() : Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        child: TextButton.icon(
-                            onPressed: () async {
-                              _controller.logout().then((_) {
-                                setState(() {});
-                                Navigator.of(context).pop();
-                              });
-                            },
-                            icon: Icon(Icons.logout),
-                            label: Text(
-                              "Sair",
-                              style: TextStyle(fontSize: 18),
-                            )),
-                      )
+                      !_controller.isLoggedIn()
+                          ? Container()
+                          : Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              child: TextButton.icon(
+                                  onPressed: () async {
+                                    _controller.logout().then((_) {
+                                      setState(() {});
+                                      Navigator.of(context).pop();
+                                    });
+                                  },
+                                  icon: Icon(Icons.logout),
+                                  label: Text(
+                                    "Sair",
+                                    style: TextStyle(fontSize: 18),
+                                  )),
+                            )
                     ],
                   ),
                 ),

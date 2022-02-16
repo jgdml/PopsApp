@@ -44,8 +44,7 @@ class _RegisterModalState extends State<RegisterModal> {
 
     try {
       await fb.FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: user.email!, password: password)
+          .createUserWithEmailAndPassword(email: user.email!, password: password)
           .then((_) => trySaveToDB());
     } on fb.FirebaseAuthException catch (err) {
       showDialog(
@@ -89,128 +88,130 @@ class _RegisterModalState extends State<RegisterModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(15),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.arrow_back),
-              ),
-              Text(
-                "Cadastre-se",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Expanded(
-            child: ListView(
-              itemExtent: 90,
+    return Scaffold(
+      body: Container(
+        padding: EdgeInsets.all(15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
               children: [
-                TextField(
-                  onChanged: (val) => setState(() {
-                    user.name = val;
-                  }),
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: "Nome",
-                    border: OutlineInputBorder(),
-                  ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.arrow_back),
                 ),
-                TextField(
-                  onChanged: (val) => setState(() {
-                    user.username = val;
-                  }),
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: "Nome de usuário",
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                DropdownButton(
-                  items: GenderEnum.values.map((GenderEnum val) {
-                    return DropdownMenuItem<GenderEnum>(
-                      value: val,
-                      child: Text(
-                        getEnumName(val),
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    );
-                  }).toList(),
-                  value: user.gender,
-                  onChanged: (val) => setState(() {
-                    user.gender = val as GenderEnum;
-                  }),
-                  hint: Text('Selecione o gênero'),
-                  style: TextStyle(fontSize: 18),
-                ),
-                TextField(
-                  onChanged: (val) => setState(() {
-                    user.phoneNumber = val;
-                  }),
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: "Celular",
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
-                TextField(
-                  onChanged: (val) => setState(() {
-                    user.email = val;
-                  }),
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                TextField(
-                  onChanged: (val) => setState(() {
-                    password = val;
-                  }),
-                  obscureText: true,
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: "Senha",
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                TextField(
-                  onChanged: (val) => setState(() {
-                    passwordConf = val;
-                  }),
-                  obscureText: true,
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: "Confirme a senha",
-                    border: OutlineInputBorder(),
-                  ),
+                Text(
+                  "Cadastre-se",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          FractionallySizedBox(
-            widthFactor: 0.8,
-            child: ElevatedButton(
-              onPressed: () => tryRegister(),
-              child: Text(
-                "Cadastrar-se",
-                style: TextStyle(fontSize: 18),
+            SizedBox(
+              height: 30,
+            ),
+            Expanded(
+              child: ListView(
+                itemExtent: 90,
+                children: [
+                  TextField(
+                    onChanged: (val) => setState(() {
+                      user.name = val;
+                    }),
+                    style: TextStyle(fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: "Nome",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  TextField(
+                    onChanged: (val) => setState(() {
+                      user.username = val;
+                    }),
+                    style: TextStyle(fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: "Nome de usuário",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  DropdownButton(
+                    items: GenderEnum.values.map((GenderEnum val) {
+                      return DropdownMenuItem<GenderEnum>(
+                        value: val,
+                        child: Text(
+                          getEnumName(val),
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
+                    value: user.gender,
+                    onChanged: (val) => setState(() {
+                      user.gender = val as GenderEnum;
+                    }),
+                    hint: Text('Selecione o gênero'),
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  TextField(
+                    onChanged: (val) => setState(() {
+                      user.phoneNumber = val;
+                    }),
+                    style: TextStyle(fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: "Celular",
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  TextField(
+                    onChanged: (val) => setState(() {
+                      user.email = val;
+                    }),
+                    style: TextStyle(fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  TextField(
+                    onChanged: (val) => setState(() {
+                      password = val;
+                    }),
+                    obscureText: true,
+                    style: TextStyle(fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: "Senha",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  TextField(
+                    onChanged: (val) => setState(() {
+                      passwordConf = val;
+                    }),
+                    obscureText: true,
+                    style: TextStyle(fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: "Confirme a senha",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 20,
+            ),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: ElevatedButton(
+                onPressed: () => tryRegister(),
+                child: Text(
+                  "Cadastrar-se",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

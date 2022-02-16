@@ -112,6 +112,11 @@ class HomeController {
         password: login.password!,
       );
       await checkUser();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Logado com sucesso"),
+        ),
+      );
       Navigator.of(context).pop();
     } on fb.FirebaseAuthException catch (err) {
       showDialog(
@@ -130,10 +135,10 @@ class HomeController {
     for (var iceman in icemen) {
       //Se a long + lat do iceman da vez menos a lat + long do user for menor
       // que o salvo na variável então ele está mais perto
-      var isClose = (iceman.position!.latitude + iceman.position!.longitude) -
-              (userLocation.latitude + userLocation.longitude) <
-          (closestIceman.position!.latitude + closestIceman.position!.longitude) -
-              (userLocation.latitude + userLocation.longitude);
+      var isClose =
+          (iceman.position!.latitude + iceman.position!.longitude) - (userLocation.latitude + userLocation.longitude) <
+              (closestIceman.position!.latitude + closestIceman.position!.longitude) -
+                  (userLocation.latitude + userLocation.longitude);
       if (isClose) {
         closestIceman = closestIceman;
       }
