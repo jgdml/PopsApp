@@ -65,7 +65,9 @@ class HomeController {
   docsToUserList(dynamic docs) {
     var users = <User>[];
     docs.forEach((doc) => {
-          if (RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN &&
+          if (doc[User.ROLE] != null &&
+              doc[User.STATUS] != null &&
+              RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN &&
               StatusEnumExtension.fromRaw(doc[User.STATUS]) != StatusEnum.I)
             {
               users.add(User(
