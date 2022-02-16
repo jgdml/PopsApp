@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:pops_app/core/model/loginDTO.dart';
 import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
@@ -17,10 +18,10 @@ class HomeController {
   final UserRepo _userRepo = UserRepo();
 
   constructor() {
-    _checkUser();
+    checkUser();
   }
 
-  void _checkUser() async {
+  checkUser() async {
     var authUser = fb.FirebaseAuth.instance.currentUser;
 
     if (authUser != null) {
@@ -35,8 +36,13 @@ class HomeController {
   void showLoginModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (context) =>
-          FractionallySizedBox(heightFactor: 0.85, child: LoginModal()),
+      builder: (context) => FractionallySizedBox(
+          heightFactor: 0.85,
+          child: LoginModal(
+            onLogged: (login) {
+              tryLogin(context, login);
+            },
+          )),
       isDismissible: false,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -51,8 +57,7 @@ class HomeController {
     if (permission == LocationPermission.denied) {
       await Geolocator.requestPermission();
     }
-    var location = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    var location = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     return LatLng(location.latitude, location.longitude);
   }
@@ -60,8 +65,7 @@ class HomeController {
   docsToUserList(dynamic docs) {
     var users = <User>[];
     docs.forEach((doc) => {
-          if (RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) ==
-                  RoleEnum.ROLE_ICEMAN &&
+          if (RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN &&
               StatusEnumExtension.fromRaw(doc[User.STATUS]) != StatusEnum.I)
             {
               users.add(User(
@@ -81,5 +85,24 @@ class HomeController {
             }
         });
     return users;
+  }
+
+  tryLogin(BuildContext context, LoginDTO login) async {
+    try {
+      await fb.FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: login.email!,
+        password: login.password!,
+      );
+      checkUser();
+      Navigator.of(context).pop();
+    } on fb.FirebaseAuthException catch (err) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Erro"),
+          content: Text(err.toString()),
+        ),
+      );
+    }
   }
 }

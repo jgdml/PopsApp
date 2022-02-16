@@ -1,11 +1,13 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:pops_app/ui/shared/register-modal-widget.dart';
 
+import '../../core/model/loginDTO.dart';
+
 class LoginModal extends StatefulWidget {
-  const LoginModal({Key? key}) : super(key: key);
+  const LoginModal({Key? key, this.onLogged}) : super(key: key);
+  final Function(LoginDTO)? onLogged;
 
   @override
   _LoginModalState createState() => _LoginModalState();
@@ -14,23 +16,6 @@ class LoginModal extends StatefulWidget {
 class _LoginModalState extends State<LoginModal> {
   String email = '';
   String password = '';
-
-  tryLogin() async {
-    try {
-      await fb.FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on fb.FirebaseAuthException catch (err) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Erro"),
-          content: Text(err.toString()),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +29,7 @@ class _LoginModalState extends State<LoginModal> {
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           TextField(
-            onChanged: (val) => this.setState(() {
+            onChanged: (val) => setState(() {
               email = val;
             }),
             style: TextStyle(fontSize: 18),
@@ -54,7 +39,7 @@ class _LoginModalState extends State<LoginModal> {
             ),
           ),
           TextField(
-            onChanged: (val) => this.setState(() {
+            onChanged: (val) => setState(() {
               password = val;
             }),
             obscureText: true,
@@ -67,7 +52,7 @@ class _LoginModalState extends State<LoginModal> {
           FractionallySizedBox(
             widthFactor: 0.8,
             child: ElevatedButton(
-              onPressed: () => tryLogin(),
+              onPressed: () => widget.onLogged!(LoginDTO(password: password, email: email)),
               child: Text(
                 "Entrar",
                 style: TextStyle(fontSize: 18),
@@ -82,8 +67,8 @@ class _LoginModalState extends State<LoginModal> {
             child: OutlinedButton(
               onPressed: () => showModalBottomSheet(
                 context: context,
-                builder: (context) => FractionallySizedBox(
-                    heightFactor: 0.85, child: RegisterModal()),
+                builder: (context) =>
+                    FractionallySizedBox(heightFactor: 0.85, child: RegisterModal()),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
