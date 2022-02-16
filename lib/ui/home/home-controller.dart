@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:pops_app/core/error/login-error.dart';
 import 'package:pops_app/core/model/loginDTO.dart';
 import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
@@ -48,12 +49,12 @@ class HomeController {
     _user = null;
   }
 
-  sendIcemanLocation(LatLng pos){
+  sendIcemanLocation(LatLng pos) {
     _user!.position = pos;
     _userRepo.saveOrUpdate(_user!);
   }
 
-  clearIcemanPosition(){
+  clearIcemanPosition() {
     _user!.position = LatLng(0, 0);
     _userRepo.saveOrUpdate(user!);
   }
@@ -123,12 +124,9 @@ class HomeController {
             active: doc[Call.ACTIVE],
             receiver: User.fromJson(doc[Call.RECEIVER]),
             caller: User.fromJson(doc[Call.CALLER]),
-            startTime: doc[Call.START_TIME] != null
-                ? DateTime.parse(doc[Call.START_TIME]).toLocal()
-                : doc[Call.START_TIME],
-            endTime: doc[Call.END_TIME] != null
-                ? DateTime.parse(doc[Call.END_TIME]).toLocal()
-                : doc[Call.END_TIME],
+            startTime:
+                doc[Call.START_TIME] != null ? DateTime.parse(doc[Call.START_TIME]).toLocal() : doc[Call.START_TIME],
+            endTime: doc[Call.END_TIME] != null ? DateTime.parse(doc[Call.END_TIME]).toLocal() : doc[Call.END_TIME],
             status: StatusEnumExtension.fromRaw(doc[Call.STATUS]),
           ))
         });
@@ -142,6 +140,14 @@ class HomeController {
         password: login.password!,
       );
       await checkUser();
+
+      if (_user!.status == StatusEnum.I) {
+        throw LoginError("Sua conta não foi aprovada pela administração");
+      }
+      if (_user!.status == StatusEnum.P) {
+        throw LoginError("A aprovação da sua conta está pendente");
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Logado com sucesso"),
@@ -156,6 +162,16 @@ class HomeController {
           content: Text(err.toString()),
         ),
       );
+      logout();
+    } on LoginError catch (err) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Erro de Login"),
+          content: Text(err.toString()),
+        ),
+      );
+      logout();
     }
   }
 
@@ -165,10 +181,10 @@ class HomeController {
     for (var iceman in icemen) {
       //Se a long + lat do iceman da vez menos a lat + long do user for menor
       // que o salvo na variável então ele está mais perto
-      var isClose = (iceman.position!.latitude + iceman.position!.longitude) -
-              (userLocation.latitude + userLocation.longitude) <
-          (closestIceman.position!.latitude + closestIceman.position!.longitude) -
-              (userLocation.latitude + userLocation.longitude);
+      var isClose =
+          (iceman.position!.latitude + iceman.position!.longitude) - (userLocation.latitude + userLocation.longitude) <
+              (closestIceman.position!.latitude + closestIceman.position!.longitude) -
+                  (userLocation.latitude + userLocation.longitude);
       if (isClose) {
         closestIceman = closestIceman;
       }

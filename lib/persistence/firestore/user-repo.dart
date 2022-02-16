@@ -25,6 +25,7 @@ class UserRepo {
           gender: GenderEnumExtension.fromRaw(doc[User.GENDER]),
           password: doc[User.PASSWORD],
           urlPhoto: doc[User.URL_PHOTO],
+          status: StatusEnumExtension.fromRaw(doc[User.STATUS]),
           email: doc[User.EMAIL],
           phoneNumber: doc[User.PHONE_NUMBER],
           role: RoleEnumEnumExtension.fromRaw(doc[User.ROLE]),
