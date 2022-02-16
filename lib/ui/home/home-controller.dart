@@ -17,6 +17,8 @@ class HomeController {
   User? _user;
   final UserRepo _userRepo = UserRepo();
 
+  User? get user => _user;
+
   constructor() {
     checkUser();
   }
