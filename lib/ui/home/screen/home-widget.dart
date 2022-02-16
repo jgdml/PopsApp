@@ -1,9 +1,11 @@
 // ignore_for_file: file_names
 
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:pops_app/core/model/role-enum.dart';
 import 'package:pops_app/persistence/firestore/call-repo.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/home/home-controller.dart';
@@ -27,10 +29,16 @@ class HomeWidget extends State<HomeScreen> {
   void initState() {
     super.initState();
     _getUserLocation();
-    // TODO - só criar esse listener se o user.role = ICEMAN (caso logado)
-    FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
-      calls = event.docs;
-    });
+    _getUser();
+  }
+
+  _getUser() async {
+    await _controller.checkUser();
+    if (_controller.getUserRole() != null && _controller.getUserRole() == RoleEnum.ROLE_ICEMAN) {
+      FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
+        calls = event.docs;
+      });
+    }
   }
 
   _getUserLocation() async {
