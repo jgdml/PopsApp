@@ -7,15 +7,18 @@ import 'package:latlong2/latlong.dart';
 import 'package:pops_app/core/model/loginDTO.dart';
 import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
+import 'package:pops_app/persistence/firestore/call-repo.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui/shared/login-modal-widget.dart';
 
+import '../../core/model/call.dart';
 import '../../core/model/gender-enum.dart';
 import '../../core/model/role-enum.dart';
 
 class HomeController {
   User? _user;
   final UserRepo _userRepo = UserRepo();
+  final CallRepo _callRepo = CallRepo();
 
   User? get user => _user;
 
@@ -69,8 +72,7 @@ class HomeController {
     if (permission == LocationPermission.denied) {
       await Geolocator.requestPermission();
     }
-    var location = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    var location = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     return LatLng(location.latitude, location.longitude);
   }
@@ -80,8 +82,7 @@ class HomeController {
     docs.forEach((doc) => {
           if (doc[User.ROLE] != null &&
               doc[User.STATUS] != null &&
-              RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) ==
-                  RoleEnum.ROLE_ICEMAN &&
+              RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN &&
               StatusEnumExtension.fromRaw(doc[User.STATUS]) != StatusEnum.I)
             {
               users.add(User(
@@ -122,5 +123,29 @@ class HomeController {
     }
   }
 
-  createCall(BuildContext context) {}
+  createCall(BuildContext context, List<User> icemen, LatLng userLocation) {
+    var closestIceman = icemen.first;
+
+    for (var iceman in icemen) {
+      //Se a long + lat do iceman da vez menos a lat + long do user for menor
+      // que o salvo na variável então ele está mais perto
+      var isClose = (iceman.position!.latitude + iceman.position!.longitude) -
+              (userLocation.latitude + userLocation.longitude) <
+          (closestIceman.position!.latitude + closestIceman.position!.longitude) -
+              (userLocation.latitude + userLocation.longitude);
+      if (isClose) {
+        closestIceman = closestIceman;
+      }
+    }
+
+    var now = DateTime.now();
+
+    _callRepo.saveOrUpdate(Call(
+        active: true,
+        caller: _user,
+        receiver: closestIceman,
+        startTime: now,
+        endTime: now.add(Duration(minutes: 3)),
+        status: StatusEnum.A));
+  }
 }
