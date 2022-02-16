@@ -48,6 +48,11 @@ class HomeController {
     _user = null;
   }
 
+  sendIcemanLocation(LatLng pos){
+    _user!.position = pos;
+    _userRepo.saveOrUpdate(_user!);
+  }
+
   Future<void> showLoginModal(BuildContext context) async {
     await showModalBottomSheet(
       context: context,

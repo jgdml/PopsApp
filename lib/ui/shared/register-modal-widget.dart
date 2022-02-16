@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pops_app/core/model/gender-enum.dart';
 import 'package:pops_app/core/model/role-enum.dart';
+import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
 import 'package:pops_app/persistence/firestore/user-repo.dart';
 
@@ -61,6 +62,8 @@ class _RegisterModalState extends State<RegisterModal> {
 
   trySaveToDB() async {
     user.role = RoleEnum.ROLE_USER;
+    user.active = true;
+    user.status = StatusEnum.A;
 
     UserRepo userRepo = UserRepo();
 

@@ -62,6 +62,7 @@ class HomeWidget extends State<HomeScreen> {
           userLocation = LatLng(position.latitude, position.longitude);
         });
         mapController.move(userLocation!, 17);
+        _controller.sendIcemanLocation(userLocation!);
       }
     });
   }
@@ -103,9 +104,7 @@ class HomeWidget extends State<HomeScreen> {
     return FloatingActionButton(
       onPressed: () async {
         await _controller.showLoginModal(context).then((_) {
-          setState(() {
-            debugPrint("update");
-          });
+          setState(() {});
         });
       },
       child: util.gradientIcon(45, Icons.campaign),
@@ -143,7 +142,6 @@ class HomeWidget extends State<HomeScreen> {
             ),
           );
         } else {
-          debugPrint("Buscou iceman");
           icemen = _controller.docsToUserList(snapshot.data!.docs);
           _receiveCall(context);
           return Stack(
@@ -278,7 +276,7 @@ class HomeWidget extends State<HomeScreen> {
               )));
 
       for (var iceman in icemen) {
-        if (iceman.position != null) positions.add(iceman.position!);
+        if (iceman.position != null && iceman.email != _controller.user!.email) positions.add(iceman.position!);
       }
 
       for (var position in positions) {
