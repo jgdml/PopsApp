@@ -28,10 +28,15 @@ class HomeController {
     }
   }
 
+  RoleEnum? getUserRole() {
+    return _user?.role;
+  }
+
   void showLoginModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => FractionallySizedBox(heightFactor: 0.85, child: LoginModal()),
+      builder: (context) =>
+          FractionallySizedBox(heightFactor: 0.85, child: LoginModal()),
       isDismissible: false,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -46,7 +51,8 @@ class HomeController {
     if (permission == LocationPermission.denied) {
       await Geolocator.requestPermission();
     }
-    var location = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var location = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
 
     return LatLng(location.latitude, location.longitude);
   }
@@ -54,7 +60,8 @@ class HomeController {
   docsToUserList(dynamic docs) {
     var users = <User>[];
     docs.forEach((doc) => {
-          if (RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) == RoleEnum.ROLE_ICEMAN &&
+          if (RoleEnumEnumExtension.fromRaw(doc[User.ROLE]) ==
+                  RoleEnum.ROLE_ICEMAN &&
               StatusEnumExtension.fromRaw(doc[User.STATUS]) != StatusEnum.I)
             {
               users.add(User(
