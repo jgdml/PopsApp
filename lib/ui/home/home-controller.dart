@@ -14,6 +14,7 @@ import 'package:pops_app/ui/shared/login-modal-widget.dart';
 import '../../core/model/call.dart';
 import '../../core/model/gender-enum.dart';
 import '../../core/model/role-enum.dart';
+import '../utils/constants.dart';
 
 class HomeController {
   User? _user;
@@ -145,7 +146,7 @@ class HomeController {
         caller: _user,
         receiver: closestIceman,
         startTime: now,
-        endTime: now.add(Duration(minutes: 3)),
+        endTime: now.add(Duration(minutes: CALL_TIMER)),
         status: StatusEnum.A));
   }
 }
