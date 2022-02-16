@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pops_app/core/model/role-enum.dart';
 import 'package:pops_app/persistence/firestore/call-repo.dart';
@@ -37,12 +38,32 @@ class HomeWidget extends State<HomeScreen> {
   _getUser() async {
     await _controller.checkUser();
     if (_controller.getUserRole() != null && _controller.getUserRole() == RoleEnum.ROLE_ICEMAN) {
-      FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
-        setState(() {
-          callsDocs = event.docs;
-        });
-      });
+      _startFirestoreListener();
+      _startLocationListener();
     }
+  }
+
+  _startFirestoreListener() {
+    FirebaseFirestore.instance.collection(CallRepo.REPO_NAME).snapshots().listen((event) {
+      setState(() {
+        callsDocs = event.docs;
+      });
+    });
+  }
+
+  _startLocationListener() {
+    final LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.bestForNavigation,
+      distanceFilter: 25,
+    );
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position? position) {
+      if (position != null) {
+        setState(() {
+          userLocation = LatLng(position.latitude, position.longitude);
+        });
+        mapController.move(userLocation!, 17);
+      }
+    });
   }
 
   Widget _getFloatingButton(BuildContext context) {
@@ -140,8 +161,7 @@ class HomeWidget extends State<HomeScreen> {
                     attributionBuilder: (_) {
                       return Text(
                         "© OpenStreetMap contributors",
-                        style: TextStyle(
-                            color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
+                        style: TextStyle(color: Colors.grey, fontSize: 12, decoration: TextDecoration.none),
                       );
                     },
                   ),
@@ -176,8 +196,7 @@ class HomeWidget extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                      decoration:
-                                          BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+                                      decoration: BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
                                       child: Icon(
                                         Icons.person,
                                         color: Colors.white,
@@ -187,8 +206,7 @@ class HomeWidget extends State<HomeScreen> {
                                     _controller.user!.name!,
                                     style: TextStyle(fontSize: 28, color: Colors.white),
                                   ),
-                                  Text(_controller.user!.email!,
-                                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                                  Text(_controller.user!.email!, style: TextStyle(fontSize: 18, color: Colors.white)),
                                 ],
                               ),
                       ),
