@@ -35,6 +35,10 @@ class HomeController {
     return _user?.role;
   }
 
+  bool isLoggedIn(){
+    return _user != null ? true : false;
+  }
+
   void showLoginModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
