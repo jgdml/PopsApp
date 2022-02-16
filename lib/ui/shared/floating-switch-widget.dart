@@ -1,11 +1,11 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:pops_app/ui/utils/util.dart';
 
 class FloatingSwitch extends StatefulWidget {
-  FloatingSwitch({Key? key, this.icon, this.enabledColor, required this.onEnable, required this.onDisable}) : super(key: key);
+  FloatingSwitch({Key? key, this.icon, required this.onEnable, required this.onDisable}) : super(key: key);
 
-  Color? enabledColor;
   IconData? icon;
   void Function() onEnable;
   void Function() onDisable;
@@ -16,6 +16,7 @@ class FloatingSwitch extends StatefulWidget {
 
 class _FloatingSwitchState extends State<FloatingSwitch> {
   _FloatingSwitchState();
+  final Util util = Util();
 
   bool enabled = false;
 
@@ -41,7 +42,7 @@ class _FloatingSwitchState extends State<FloatingSwitch> {
     return FloatingActionButton(
       backgroundColor: Colors.white,
       onPressed: () => buttonPress(),
-      child: Icon(widget.icon, color: enabled? widget.enabledColor : Colors.grey,),
+      child: enabled ? util.gradientIcon(28, widget.icon!) : Icon(widget.icon, size: 28, color: Colors.grey,),
     );
   }
 }

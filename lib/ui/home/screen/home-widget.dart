@@ -66,21 +66,12 @@ class HomeWidget extends State<HomeScreen> {
   Widget _floatingSwitchButton(BuildContext context) {
     return FloatingSwitch(
       onEnable: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("GPS ativado"),
-          ),
-        );
+        _showQuickSnack("GPS ativado", context);
       },
       onDisable: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("GPS desativado"),
-          ),
-        );
+        _showQuickSnack("GPS desativado", context);
       },
       icon: Icons.gps_fixed,
-      enabledColor: Colors.lightGreen,
     );
   }
 
@@ -96,6 +87,16 @@ class HomeWidget extends State<HomeScreen> {
       child: util.gradientIcon(45, Icons.campaign),
       backgroundColor: Colors.white,
     );
+  }
+
+  _showQuickSnack(String text, BuildContext context){
+    ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(text),
+            duration: Duration(milliseconds: 800),
+          ),
+
+        );
   }
 
   _getUserLocation() async {
