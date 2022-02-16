@@ -27,6 +27,7 @@ class HomeWidget extends State<HomeScreen> {
   var callsDocs = [];
   var icemen = <User>[];
   LatLng? userLocation;
+  bool icemanGps = false;
 
   @override
   void initState() {
@@ -62,7 +63,9 @@ class HomeWidget extends State<HomeScreen> {
           userLocation = LatLng(position.latitude, position.longitude);
         });
         mapController.move(userLocation!, 17);
-        _controller.sendIcemanLocation(userLocation!);
+        if (icemanGps){
+          _controller.sendIcemanLocation(userLocation!);
+        }
       }
     });
   }
@@ -91,9 +94,12 @@ class HomeWidget extends State<HomeScreen> {
   Widget _floatingSwitchButton(BuildContext context) {
     return FloatingSwitch(
       onEnable: () {
+        icemanGps = true;
         _showQuickSnack("GPS ativado", context);
       },
       onDisable: () {
+        _controller.clearIcemanPosition();
+        icemanGps = false;
         _showQuickSnack("GPS desativado", context);
       },
       icon: Icons.gps_fixed,
@@ -104,6 +110,8 @@ class HomeWidget extends State<HomeScreen> {
     return FloatingActionButton(
       onPressed: () async {
         await _controller.showLoginModal(context).then((_) {
+          _getUserLocation();
+          _getUser();
           setState(() {});
         });
       },
@@ -216,6 +224,8 @@ class HomeWidget extends State<HomeScreen> {
                               child: TextButton.icon(
                                   onPressed: () async {
                                     _controller.logout().then((_) {
+                                      _getUserLocation();
+                                      _getUser();
                                       setState(() {});
                                       Navigator.of(context).pop();
                                     });
@@ -247,7 +257,7 @@ class HomeWidget extends State<HomeScreen> {
   _receiveCall(BuildContext context) {
     var calls = _controller.docsToCallsList(callsDocs);
     for (var call in calls) {
-      if (call.receiver!.email == _controller.user!.email) {
+      if (_controller.user != null && call.receiver!.email == _controller.user!.email) {
         if (call.endTime!.isBefore(DateTime.now())) {
           return Container(
             width: 200,
@@ -265,18 +275,25 @@ class HomeWidget extends State<HomeScreen> {
 
     //Provisório
     if (userLocation != null) {
-      markers.add(Marker(
+      markers.add(
+        Marker(
           width: 80.0,
           height: 80.0,
           point: userLocation!,
           builder: (ctx) => Icon(
-                Icons.place,
-                color: Colors.red,
-                size: 50,
-              )));
+            Icons.place,
+            color: Colors.red,
+            size: 50,
+          ),
+        ),
+      );
 
       for (var iceman in icemen) {
-        if (iceman.position != null && iceman.email != _controller.user!.email) positions.add(iceman.position!);
+        if (iceman.position != null) {
+          if (_controller.user == null || iceman.email != _controller.user!.email) {
+            positions.add(iceman.position!);
+          }
+        }
       }
 
       for (var position in positions) {
