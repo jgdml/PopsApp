@@ -36,10 +36,9 @@ class HomeWidget extends State<HomeScreen> {
   _getUserLocation() async {
     await _controller.getClientLocation().then((value) {
       setState(() {
-          userLocation = value;
-          
-        });
-        mapController.onReady.then((value) => mapController.move(userLocation!, 17));
+        userLocation = value;
+      });
+      mapController.onReady.then((value) => mapController.move(userLocation!, 17));
     });
   }
 
@@ -121,23 +120,26 @@ class HomeWidget extends State<HomeScreen> {
                 color: Colors.red,
                 size: 50,
               )));
-    }
 
-    for (var iceman in icemen) {
-      if (iceman.position != null) positions.add(iceman.position!);
-    }
+      for (var iceman in icemen) {
+        if (iceman.position != null) positions.add(iceman.position!);
+      }
 
-    for (var position in positions) {
-      markers.add(Marker(
-          width: 80.0,
-          height: 80.0,
-          point: position,
-          builder: (ctx) => AnimatedContainer(
-                duration: Duration(milliseconds: 500),
-                child: Image(
-                  image: AssetImage("assets/popsicle.png"),
-                ),
-              )));
+      for (var position in positions) {
+        if ((userLocation!.latitude - position.latitude).abs() < ICEMEN_LOOK_RANGE &&
+            (userLocation!.longitude - position.longitude).abs() < ICEMEN_LOOK_RANGE) {
+          markers.add(Marker(
+              width: 80.0,
+              height: 80.0,
+              point: position,
+              builder: (ctx) => AnimatedContainer(
+                    duration: Duration(milliseconds: 500),
+                    child: Image(
+                      image: AssetImage("assets/popsicle.png"),
+                    ),
+                  )));
+        }
+      }
     }
 
     return markers;
