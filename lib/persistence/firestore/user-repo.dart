@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pops_app/core/model/gender-enum.dart';
 import 'package:pops_app/core/model/role-enum.dart';
+import 'package:pops_app/core/model/status-enum.dart';
 import 'package:pops_app/core/model/user.dart';
 
 class UserRepo {
@@ -31,11 +32,11 @@ class UserRepo {
     return lista.toList();
   }
 
-  Future<User> findByEmail(String email) async {
+  Future<User?> findByEmail(String email) async {
     var res = await userCollection.where('email', isEqualTo: email).get();
-    var doc = res.docs[0];
-
-    return User(
+    if (res.docs.isNotEmpty){
+      var doc = res.docs[0];
+      return User(
       id: doc.reference.id.toString(),
       active: doc[User.ACTIVE],
       name: doc[User.NAME],
@@ -43,10 +44,18 @@ class UserRepo {
       gender: GenderEnumExtension.fromRaw(doc[User.GENDER]),
       password: doc[User.PASSWORD],
       urlPhoto: doc[User.URL_PHOTO],
+      status: StatusEnumExtension.fromRaw(doc[User.STATUS]),
       email: doc[User.EMAIL],
       phoneNumber: doc[User.PHONE_NUMBER],
       role: RoleEnumEnumExtension.fromRaw(doc[User.ROLE]),
     );
+    }
+    else{
+      return null;
+    }
+    
+
+    
   }
 
   delete(id) async {
