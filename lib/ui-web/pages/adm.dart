@@ -16,10 +16,30 @@ class _AdmPageState extends State<AdmPage> {
   UserRepo userRepo = UserRepo();
   User user = User();
 
-  approveOrReject(User user, StatusEnum newStatus) {
+  int? _pending, _approved, _rejected;
+
+  approveOrReject(User user, StatusEnum newStatus, List<User> icemen) {
     if (user.status == StatusEnum.P) {
       user.status = newStatus;
       userRepo.saveOrUpdate(user);
+      setState(() {
+        _countStatus(icemen);
+      });
+    }
+  }
+
+  _countStatus(List<User> icemen) {
+    _pending = 0;
+    _rejected = 0;
+    _approved = 0;
+    for (var iceman in icemen) {
+      if (iceman.status == StatusEnum.P) {
+        _pending = _pending! + 1;
+      } else if (iceman.status == StatusEnum.A) {
+        _approved = _approved! + 1;
+      } else if (iceman.status == StatusEnum.I) {
+        _rejected = _rejected! + 1;
+      }
     }
   }
 
@@ -67,9 +87,9 @@ class _AdmPageState extends State<AdmPage> {
                           height: 120,
                           padding: EdgeInsets.only(top: 40),
                           child: Column(
-                            children: const <Widget>[
+                            children: <Widget>[
                               Text("TOTAL APROVADOS", style: TextStyle(fontSize: 20.0)),
-                              Text("12",
+                              Text(_approved?.toString() ?? "XXXX",
                                   style: TextStyle(
                                       fontSize: 25.0, color: Color.fromARGB(255, 41, 209, 47))),
                             ],
@@ -85,9 +105,9 @@ class _AdmPageState extends State<AdmPage> {
                           height: 120,
                           padding: EdgeInsets.only(top: 40),
                           child: Column(
-                            children: const <Widget>[
+                            children: <Widget>[
                               Text("TOTAL REPROVADOS", style: TextStyle(fontSize: 20.0)),
-                              Text("8",
+                              Text(_rejected?.toString() ?? "XXXX",
                                   style: TextStyle(
                                       fontSize: 25.0, color: Color.fromARGB(255, 255, 17, 0))),
                             ],
@@ -103,9 +123,9 @@ class _AdmPageState extends State<AdmPage> {
                           height: 120,
                           padding: EdgeInsets.only(top: 40),
                           child: Column(
-                            children: const <Widget>[
+                            children: <Widget>[
                               Text("TOTAL EM ANALISE", style: TextStyle(fontSize: 20.0)),
-                              Text("6",
+                              Text(_pending?.toString() ?? "XXXX",
                                   style: TextStyle(
                                       fontSize: 25.0, color: Color.fromARGB(255, 0, 26, 255))),
                             ],
@@ -135,12 +155,18 @@ class _AdmPageState extends State<AdmPage> {
                           );
                         } else {
                           List<User> users = future.data as List<User>;
-                          users.removeWhere((element) => element.status != StatusEnum.P);
+                          var pendingList = <User>[];
+                          for (var iceman in users) {
+                            if(iceman.status == StatusEnum.P){
+                              pendingList.add(iceman);
+                            }
+                          }
+                          _countStatus(users);
                           return ListView.builder(
                             // shrinkWrap: true,
-                            itemCount: users.length,
+                            itemCount: pendingList.length,
                             itemBuilder: (context, index) {
-                              User user = users[index];
+                              User user = pendingList[index];
                               debugPrint(user.toJson().toString());
                               return Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -155,14 +181,14 @@ class _AdmPageState extends State<AdmPage> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          approveOrReject(user, StatusEnum.A);
+                                          approveOrReject(user, StatusEnum.A, users);
                                         });
                                       }),
                                   TextButton(
                                       child: Text('Rejeitar', style: TextStyle(color: Colors.red)),
                                       onPressed: () {
                                         setState(() {
-                                          approveOrReject(user, StatusEnum.I);
+                                          approveOrReject(user, StatusEnum.I, users);
                                         });
                                       }),
                                 ],
