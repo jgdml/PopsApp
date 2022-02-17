@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pops_app/ui/theme/colors.dart';
 
+import '../../core/model/status-enum.dart';
 import '../../core/model/user.dart';
 import '../../persistence/firestore/user-repo.dart';
 
@@ -15,6 +16,16 @@ class AdmPage extends StatefulWidget {
 
 class _AdmPageState extends State<AdmPage> {
   UserRepo userRepo = UserRepo();
+  User user = User();
+
+  approveOrReject(User user, StatusEnum newStatus){
+    if(user.status == StatusEnum.P){
+      user.status = newStatus;
+      userRepo.saveOrUpdate(user);
+    }
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +73,7 @@ class _AdmPageState extends State<AdmPage> {
                           child: Column(
                             children: const <Widget>[
                               Text("TOTAL APROVADOS", style: TextStyle(fontSize: 20.0)),
-                              Text("0",
+                              Text("12",
                                   style: TextStyle(
                                       fontSize: 25.0, color: Color.fromARGB(255, 41, 209, 47))),
                             ],
@@ -88,7 +99,7 @@ class _AdmPageState extends State<AdmPage> {
                           child: Column(
                             children: const <Widget>[
                               Text("TOTAL REPROVADOS", style: TextStyle(fontSize: 20.0)),
-                              Text("0",
+                              Text("8",
                                   style: TextStyle(
                                       fontSize: 25.0, color: Color.fromARGB(255, 255, 17, 0))),
                             ],
@@ -106,7 +117,7 @@ class _AdmPageState extends State<AdmPage> {
                           child: Column(
                             children: const <Widget>[
                               Text("TOTAL EM ANALISE", style: TextStyle(fontSize: 20.0)),
-                              Text("0",
+                              Text("6",
                                   style: TextStyle(
                                       fontSize: 25.0, color: Color.fromARGB(255, 0, 26, 255))),
                             ],
@@ -151,6 +162,25 @@ class _AdmPageState extends State<AdmPage> {
                                   Text(user.id!),
                                   Text(user.name!),
                                   Text(user.email!),
+                                  TextButton(
+                                    child: Text('Aprovar', style: TextStyle(color:primaryColor),), 
+
+                                    onPressed:(){
+                                      setState(() {
+                                        approveOrReject(user, StatusEnum.A);
+                                      });
+                                  
+
+                                    } ),
+                                  TextButton(
+                                    child: Text('Rejeitar', style: TextStyle(color: Colors.red)),
+                                    onPressed: (){
+                                      setState(() {
+                                        approveOrReject(user, StatusEnum.I);
+                                      });
+                                      
+
+                                    }),
                                 ],
                               );
                             },
