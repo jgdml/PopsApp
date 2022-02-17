@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pops_app/ui-web/pages/login.dart';
 import 'package:pops_app/ui/theme/texts.dart';
 
 import '../ui-web/pages/adm.dart';
@@ -22,7 +23,7 @@ class _AppWidget extends State<AppWidget> {
           primaryColor: primaryColor,
           dividerColor: dividerColor,
           accentColor: accentColor),
-      home: AdmPage(),
+      home: LoginPage(),
     );
   }
 }
