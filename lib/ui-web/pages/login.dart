@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:pops_app/core/error/login-error.dart';
+import 'package:pops_app/core/model/role-enum.dart';
+import 'package:pops_app/core/model/user.dart';
+import 'package:pops_app/persistence/firestore/user-repo.dart';
 import 'package:pops_app/ui-web/pages/adm.dart';
 
 import 'cadastro.dart';
@@ -21,16 +25,33 @@ class _LoginPageState extends State<LoginPage> {
         email: email,
         password: password,
       );
+
+      User? u = await UserRepo().findByEmail(fb.FirebaseAuth.instance.currentUser!.email!);
+
+      if (u!.role != RoleEnum.ROLE_ADMIN){
+        throw LoginError("Você não tem permissão para acessar o painel");
+      }
+      
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => AdmPage()),
       );
+      
       
     } on fb.FirebaseAuthException catch (err) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Erro"),
+          content: Text(err.toString()),
+        ),
+      );
+    }
+    on LoginError catch (err){
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Erro de Login"),
           content: Text(err.toString()),
         ),
       );
