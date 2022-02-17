@@ -60,7 +60,7 @@ class _CadastroPageState extends State<CadastroPage> {
   trySaveToDB() async {
     user.role = RoleEnum.ROLE_ICEMAN;
     user.active = true;
-    user.status = StatusEnum.I;
+    user.status = StatusEnum.P;
 
     UserRepo userRepo = UserRepo();
 

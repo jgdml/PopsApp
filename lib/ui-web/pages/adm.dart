@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
+import '../../core/model/user.dart';
+import '../../persistence/firestore/user-repo.dart';
+
 class AdmPage extends StatelessWidget {
-  const AdmPage({Key? key}) : super(key: key);
+
+  UserRepo userRepo = UserRepo();
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +20,9 @@ class AdmPage extends StatelessWidget {
               ListTile(
                 title: Text("POP's ADM BAR "),
                 // subtitle: Text("meus favoritos..."),
-              )
+              ),
+              
             ],
-
           ),
         ),
 
@@ -24,7 +30,7 @@ class AdmPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
           shadowColor: Colors.transparent,
-      ),
+        ),
 
       body: Center(
         child: FractionallySizedBox(
@@ -36,36 +42,158 @@ class AdmPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(),
                 child: Container(
-                  width: double.infinity,
-                  height: 490,
+                  //width: double.infinity,
+                  width: 1020,
+                  height: 700,
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 245, 243, 241),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(30.0),
+                      topLeft: Radius.circular(30.0),
                       bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0),
                     ),
 
                   ),
+                  child: Column(
+                    children: [
+                      Container(
+                        
+                        // padding: EdgeInsets.only(top:0,bottom: 510, left: 100),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top:50, right: 30),
+                              child: Card(
+                                child: Container(
+                                  width:250,
+                                  height: 120,
+                                  padding: EdgeInsets.only(top:40),
+                                  child: Column(
+                                    children: <Widget>[
+                                        Text("TOTAL APROVADOS", style: TextStyle(fontSize: 20.0)),
+                                        Text("0", style: TextStyle(fontSize: 25.0, color: Color.fromARGB(255, 41, 209, 47))),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
 
-                  padding: EdgeInsets.only(top: 40, left: 40, right: 40),
-                  child: ListView(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Image.asset("assets/popsicle.png"),
+                            Container(
+                              padding: EdgeInsets.only(top:50, right: 30),
+                              // decoration: BoxDecoration(
+                              //   borderRadius: BorderRadius.only(
+                              //     topRight: Radius.circular(30.0),
+                              //     topLeft: Radius.circular(30.0),
+                              //     bottomLeft: Radius.circular(30.0),
+                              //     bottomRight: Radius.circular(30.0),
+                              //   ),
+                              // ),
+                              child: Card(
+                                child: Container(
+                                  width:250,
+                                  height: 120,
+                                  padding: EdgeInsets.only(top:40),
+                                  child: Column(
+                                    children: <Widget>[
+                                        Text("TOTAL REPROVADOS", style: TextStyle(fontSize: 20.0)),
+                                        Text("0", style: TextStyle(fontSize: 25.0, color: Color.fromARGB(255, 255, 17, 0))),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            
+                            Container(
+                              padding: EdgeInsets.only(top:50, right: 30),
+                              child: Card(
+                                child: Container(
+                                  
+                                  width:250,
+                                  height: 120,
+                                  padding: EdgeInsets.only(top:40),
+                                  child: Column(
+                                    children: <Widget>[
+                                        Text("TOTAL EM ANALISE", style: TextStyle(fontSize: 20.0)),
+                                        Text("0", style: TextStyle(fontSize: 25.0, color: Color.fromARGB(255, 0, 26, 255))),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            
+                            Padding(
+                              padding: const EdgeInsets.only(left: 30),
+                              child: Container(
+                                
+                              ),
+                            ),
+
+                          ],
+                        )
                       ),
-
-                      SizedBox(
-                        height: 10,
+                      Column(
+                        children: [
+                          SizedBox(
+                            
+                            child: Expanded(
+                              child: FutureBuilder(
+                                builder: (context, future) {
+                                  if (future.connectionState == ConnectionState.none &&
+                                      future.hasData == null) {
+                                    //print('project snapshot data is: ${projectSnap.data}');
+                                    return Container();
+                                  }
+                                  List<User> users = future.data as List<User>; 
+                                  
+                                  if(User.STATUS == "P"){
+                          
+                                  }
+                                  return ListView.builder(
+                                    itemExtent: 100,
+                                    shrinkWrap: true,
+                                    itemCount: users.length,
+                                    itemBuilder: (context, index) {
+                                      User user = users[index];
+                                      print(user.toJson());
+                                      return Container(
+                                        // padding: EdgeInsets.only( ottom:10, top: 50),
+                                        child: Container(
+                                        
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: <Widget>[
+                                              Text(user.id!),
+                                              Text(user.name!),
+                                              Text(user.email!),
+                                            ],
+                                          ),
+                                        ),
+                                        
+                                      );
+                                      
+                                    },
+                                  );
+                          
+                                  
+                                },
+                                future: userRepo.findIcemen(),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-
-
                     ],
+                    
                   ),
+                  
+
+                  
+                                   
                 ),
               ),
-              //++++++++++++++++++++++++++++  Botao LOGIN +++++++++++++++++++++++++
+              
             ],
           ),
         ),
