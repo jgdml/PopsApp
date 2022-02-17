@@ -21,13 +21,9 @@ class _AdmPageState extends State<AdmPage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 212, 16, 75),
       drawer: Drawer(
-        child: ListView(
-          children: const [
-            ListTile(
-              title: Text("POP's ADM BAR "),
-              // subtitle: Text("meus favoritos..."),
-            ),
-          ],
+        child: ListTile(
+          title: Text("POP's ADM BAR "),
+          // subtitle: Text("meus favoritos..."),
         ),
       ),
       appBar: AppBar(
@@ -51,6 +47,7 @@ class _AdmPageState extends State<AdmPage> {
               ),
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -123,41 +120,45 @@ class _AdmPageState extends State<AdmPage> {
                     // ),
                   ],
                 ),
-                SizedBox(
-                  child: FutureBuilder(
-                    future: userRepo.findIcemen(),
-                    builder: (context, future) {
-                      if (future.data == null) {
-                        //print('project snapshot data is: ${projectSnap.data}');
-                        return Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.red,
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.loose,
+                  child: SizedBox(
+                    child: FutureBuilder(
+                      future: userRepo.findIcemen(),
+                      builder: (context, future) {
+                        if (future.data == null) {
+                          //print('project snapshot data is: ${projectSnap.data}');
+                          return Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.red,
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        List<User> users = future.data as List<User>;
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: users.length,
-                          itemBuilder: (context, index) {
-                            User user = users[index];
-                            debugPrint(user.toJson().toString());
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Text(user.id!),
-                                Text(user.name!),
-                                Text(user.email!),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                      // if (User.STATUS == "P") {}
-                    },
+                          );
+                        } else {
+                          List<User> users = future.data as List<User>;
+                          return ListView.builder(
+                            // shrinkWrap: true,
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              User user = users[index];
+                              debugPrint(user.toJson().toString());
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Text(user.id!),
+                                  Text(user.name!),
+                                  Text(user.email!),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                        // if (User.STATUS == "P") {}
+                      },
+                    ),
                   ),
                 ),
               ],
