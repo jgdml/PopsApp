@@ -115,6 +115,7 @@ class _AdmPageState extends State<AdmPage> {
                     ),
                   ],
                 ),
+                SizedBox(height: 40),
                 Flexible(
                   flex: 1,
                   fit: FlexFit.loose,
