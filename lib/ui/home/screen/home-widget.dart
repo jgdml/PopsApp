@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pops_app/core/model/role-enum.dart';
@@ -273,13 +274,30 @@ class HomeWidget extends State<HomeScreen> {
       if (_controller.user != null && call.receiver!.email == _controller.user!.email) {
         if (call.endTime!.isAfter(DateTime.now()) && call.status != StatusEnum.I) {
           debugPrint("Encontrou receiver " + call.receiver.email);
-          widget = Center(
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(width: 5, color: primaryColor),
-                  borderRadius: BorderRadius.circular(500)),
-              child: util.gradientIcon(400, Icons.campaign, startGradient: 0, endGradient: 0.5),
-            ),
+          widget = Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => FlutterRingtonePlayer.stop(),
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.8),
+                        border: Border.all(width: 5, color: primaryColor),
+                        borderRadius: BorderRadius.circular(500)),
+                    child:
+                        util.gradientIcon(400, Icons.campaign, startGradient: 0, endGradient: 0.5),
+                  ),
+                ),
+              ));
+          FlutterRingtonePlayer.play(
+            android: AndroidSounds.alarm,
+            // android: AndroidSounds.ringtone,
+            ios: IosSounds.glass,
+            looping: true,
+            // Android only - API >= 28
+            volume: 1,
+            // Android only - API >= 28
+            asAlarm: false, // Android only - all APIs
           );
           break;
         }

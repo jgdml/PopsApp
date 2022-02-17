@@ -47,7 +47,7 @@ dependencies:
   cloud_firestore:
   firebase_core:
   firebase_auth: ^3.3.7
-  audioplayer: ^0.8.1
+  flutter_ringtone_player: ^3.1.1
 
 dev_dependencies:
   flutter_test:
