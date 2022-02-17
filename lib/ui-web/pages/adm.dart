@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:pops_app/ui/theme/colors.dart';
 
@@ -18,14 +16,12 @@ class _AdmPageState extends State<AdmPage> {
   UserRepo userRepo = UserRepo();
   User user = User();
 
-  approveOrReject(User user, StatusEnum newStatus){
-    if(user.status == StatusEnum.P){
+  approveOrReject(User user, StatusEnum newStatus) {
+    if (user.status == StatusEnum.P) {
       user.status = newStatus;
       userRepo.saveOrUpdate(user);
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -83,14 +79,6 @@ class _AdmPageState extends State<AdmPage> {
                     ),
                     Container(
                       padding: EdgeInsets.only(top: 50, right: 30),
-                      // decoration: BoxDecoration(
-                      //   borderRadius: BorderRadius.only(
-                      //     topRight: Radius.circular(30.0),
-                      //     topLeft: Radius.circular(30.0),
-                      //     bottomLeft: Radius.circular(30.0),
-                      //     bottomRight: Radius.circular(30.0),
-                      //   ),
-                      // ),
                       child: Card(
                         child: Container(
                           width: 250,
@@ -125,10 +113,6 @@ class _AdmPageState extends State<AdmPage> {
                         ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 30),
-                    //   child: Container(),
-                    // ),
                   ],
                 ),
                 Flexible(
@@ -150,6 +134,7 @@ class _AdmPageState extends State<AdmPage> {
                           );
                         } else {
                           List<User> users = future.data as List<User>;
+                          users.removeWhere((element) => element.status != StatusEnum.P);
                           return ListView.builder(
                             // shrinkWrap: true,
                             itemCount: users.length,
@@ -163,24 +148,22 @@ class _AdmPageState extends State<AdmPage> {
                                   Text(user.name!),
                                   Text(user.email!),
                                   TextButton(
-                                    child: Text('Aprovar', style: TextStyle(color:primaryColor),), 
-
-                                    onPressed:(){
-                                      setState(() {
-                                        approveOrReject(user, StatusEnum.A);
-                                      });
-                                  
-
-                                    } ),
+                                      child: Text(
+                                        'Aprovar',
+                                        style: TextStyle(color: primaryColor),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          approveOrReject(user, StatusEnum.A);
+                                        });
+                                      }),
                                   TextButton(
-                                    child: Text('Rejeitar', style: TextStyle(color: Colors.red)),
-                                    onPressed: (){
-                                      setState(() {
-                                        approveOrReject(user, StatusEnum.I);
-                                      });
-                                      
-
-                                    }),
+                                      child: Text('Rejeitar', style: TextStyle(color: Colors.red)),
+                                      onPressed: () {
+                                        setState(() {
+                                          approveOrReject(user, StatusEnum.I);
+                                        });
+                                      }),
                                 ],
                               );
                             },
