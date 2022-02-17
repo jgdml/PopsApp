@@ -7,7 +7,6 @@ import '../../core/model/user.dart';
 import '../../persistence/firestore/user-repo.dart';
 
 class AdmPage extends StatefulWidget {
-
   const AdmPage({Key? key}) : super(key: key);
 
   @override
@@ -68,8 +67,7 @@ class _AdmPageState extends State<AdmPage> {
                               Text("TOTAL APROVADOS", style: TextStyle(fontSize: 20.0)),
                               Text("0",
                                   style: TextStyle(
-                                      fontSize: 25.0,
-                                      color: Color.fromARGB(255, 41, 209, 47))),
+                                      fontSize: 25.0, color: Color.fromARGB(255, 41, 209, 47))),
                             ],
                           ),
                         ),
@@ -95,8 +93,7 @@ class _AdmPageState extends State<AdmPage> {
                               Text("TOTAL REPROVADOS", style: TextStyle(fontSize: 20.0)),
                               Text("0",
                                   style: TextStyle(
-                                      fontSize: 25.0,
-                                      color: Color.fromARGB(255, 255, 17, 0))),
+                                      fontSize: 25.0, color: Color.fromARGB(255, 255, 17, 0))),
                             ],
                           ),
                         ),
@@ -114,8 +111,7 @@ class _AdmPageState extends State<AdmPage> {
                               Text("TOTAL EM ANALISE", style: TextStyle(fontSize: 20.0)),
                               Text("0",
                                   style: TextStyle(
-                                      fontSize: 25.0,
-                                      color: Color.fromARGB(255, 0, 26, 255))),
+                                      fontSize: 25.0, color: Color.fromARGB(255, 0, 26, 255))),
                             ],
                           ),
                         ),
@@ -129,6 +125,7 @@ class _AdmPageState extends State<AdmPage> {
                 ),
                 SizedBox(
                   child: FutureBuilder(
+                    future: userRepo.findIcemen(),
                     builder: (context, future) {
                       if (future.data == null) {
                         //print('project snapshot data is: ${projectSnap.data}');
@@ -136,32 +133,31 @@ class _AdmPageState extends State<AdmPage> {
                           padding: const EdgeInsets.all(20),
                           child: Center(
                             child: CircularProgressIndicator(
-                              color: primaryColor,
+                              color: Colors.red,
                             ),
                           ),
                         );
+                      } else {
+                        List<User> users = future.data as List<User>;
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            User user = users[index];
+                            debugPrint(user.toJson().toString());
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Text(user.id!),
+                                Text(user.name!),
+                                Text(user.email!),
+                              ],
+                            );
+                          },
+                        );
                       }
-                      List<User> users = future.data as List<User>;
-
-                      if (User.STATUS == "P") {}
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: users.length,
-                        itemBuilder: (context, index) {
-                          User user = users[index];
-                          debugPrint(user.toJson().toString());
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text(user.id!),
-                              Text(user.name!),
-                              Text(user.email!),
-                            ],
-                          );
-                        },
-                      );
+                      // if (User.STATUS == "P") {}
                     },
-                    future: userRepo.findIcemen(),
                   ),
                 ),
               ],
