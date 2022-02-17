@@ -30,11 +30,10 @@ class AdmPage extends StatelessWidget {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.only(),
+          padding: const EdgeInsets.only(bottom: 10),
           child: Container(
             //width: double.infinity,
-            // width: 1020,
-            // height: 700,
+            width: 1020,
             decoration: BoxDecoration(
               color: Color.fromARGB(255, 245, 243, 241),
               borderRadius: BorderRadius.only(
