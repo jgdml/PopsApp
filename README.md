@@ -35,7 +35,7 @@ Clone o repositório e serão necessárias os seguintes passos:
 ## Padrão de criação de branches
 
 - Implementação: feature/<descricao-tarefa>
-- Refatoração: refac/<descricao-tarefa>
+- Refatoração: refac/<descricao-tarefa> 
 - Correção para dev: fix/<descricao-tarefa>
 - Correção para rc: fixrc/<descricao-tarefa>
 - Correção para patch: hotfix/<descricao-tarefa>
