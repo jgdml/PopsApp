@@ -18,6 +18,7 @@ Clone o repositório e serão necessárias os seguintes passos:
           ![Android Studio Gadgets](https://miro.medium.com/max/1400/1*ms5Tc_MPZJOIfg7d3Tqflg.png)
 
 
+
 # Ferramentas utilizadas
 
 - [Google Firebase] - Firebase é uma plataforma desenvolvida pelo Google para a criação de aplicativos móveis e da web.
