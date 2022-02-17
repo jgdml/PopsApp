@@ -6,7 +6,15 @@ import 'package:pops_app/ui/theme/colors.dart';
 import '../../core/model/user.dart';
 import '../../persistence/firestore/user-repo.dart';
 
-class AdmPage extends StatelessWidget {
+class AdmPage extends StatefulWidget {
+
+  const AdmPage({Key? key}) : super(key: key);
+
+  @override
+  State<AdmPage> createState() => _AdmPageState();
+}
+
+class _AdmPageState extends State<AdmPage> {
   UserRepo userRepo = UserRepo();
 
   @override
